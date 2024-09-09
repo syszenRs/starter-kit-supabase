@@ -11,6 +11,7 @@ node_modules
 Thumbs.db
 
 # Env
+supabase-creds.txt
 .env
 .env.*
 !.env.example
