@@ -1,12 +1,76 @@
 <!doctype html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8" />
+		<!--TODO: complete header-->
+
+		<meta charset="UTF-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+		<!-- SEO Meta Tags -->
+		<title>Start kit</title>
+		<meta
+			name="description"
+			content="A brief description of the page content (up to 155 characters) for better search engine indexing."
+		/>
+		<meta name="keywords" content="keyword1, keyword2, keyword3, related to page content" />
+		<!-- Allows search engines to index the page -->
+		<meta name="robots" content="index, follow" />
+
+		<!-- Open Graph for Social Media -->
+		<meta property="og:title" content="XYZ" />
+		<meta
+			property="og:description"
+			content="A brief description for social media sharing (up to 200 characters)."
+		/>
+		<meta property="og:image" content="https://www.example.com/images/og-image.jpg" />
+		<!-- URL to the social media preview image -->
+		<meta property="og:url" content="https://www.example.com/current-page-url" />
+		<meta property="og:type" content="website" />
+
+		<!-- Twitter Card for Social Sharing
+			<meta name="twitter:card" content="summary_large_image">
+			<meta name="twitter:title" content="Page Title | Brand Name">
+			<meta name="twitter:description" content="A brief description for Twitter sharing.">
+			<meta name="twitter:image" content="https://www.example.com/images/twitter-image.jpg">
+			-->
+		<!-- Standard Favicon
+			<link rel="icon" href="/favicon.ico" type="image/x-icon">
+			-->
+		<!-- IOS / Apple Touch Icon
+			<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+			-->
+		<!-- Schema.org for Google Structured Data
+			<script type="application/ld+json">
+			{
+			  "@context": "https://schema.org",
+			  "@type": "WebPage",
+			  "name": "Page Title",
+			  "description": "A brief description of the page content.",
+			  "url": "https://www.example.com/current-page-url"
+			}
+			</script>
+			-->
+		<!-- Canonical URL
+			<link rel="canonical" href="https://www.example.com/current-page-url">
+			-->
+		<!-- Additional Meta Tags -->
+		<meta name="author" content="Start Kit" />
+		<meta name="theme-color" content="#ffffff" />
+		<!-- Browser toolbar color for mobile devices -->
+
+		<!-- Performance: Prefetching for faster resource loading !!!IFFF NEEDED!!!
+			<link rel="dns-prefetch" href="//example.com">
+			<link rel="preload" href="/path/to/critical-resource.js" as="script">
+			-->
 		%sveltekit.head%
 	</head>
-	<body data-sveltekit-preload-data="hover">
+
+	<body
+		data-sveltekit-preload-data="hover"
+		class="mx-1 md:mx-10 min-h-dvh flex flex-col overflow-y-visible bg-[#dadcdc]"
+	>
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>

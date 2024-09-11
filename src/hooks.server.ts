@@ -63,6 +63,8 @@ const supabase: Handle = async ({ event, resolve }) => {
 };
 
 const authGuard: Handle = async ({ event, resolve }) => {
+	//TODO: this only runs for server side pages (pages with server.ts file associated)
+	// so extract this logic to run this in layout aswell for server pages that don't need server
 	const { session, user } = await event.locals.safeGetSession();
 	event.locals.session = session;
 	event.locals.user = user;
@@ -70,12 +72,12 @@ const authGuard: Handle = async ({ event, resolve }) => {
 	const isAccessingAuthenticatedPages = event.route.id?.includes('(authenticated)');
 
 	if (!event.locals.session && isAccessingAuthenticatedPages) {
-		redirect(303, '/signin');
+		throw redirect(303, '/signin');
 	}
 
 	//TODO: make this more dynamic and in the future we could have accessible pages like abouts, policy etc
 	if (event.locals.session && !isAccessingAuthenticatedPages) {
-		redirect(303, '/dashboard');
+		throw redirect(303, '/dashboard');
 	}
 
 	return resolve(event);

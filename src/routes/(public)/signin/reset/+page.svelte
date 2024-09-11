@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { enhance } from '$app/forms';
 </script>
 
@@ -10,22 +10,9 @@
 		<input
 			type="email"
 			name="email"
-			value="test@email.com"
 			placeholder="Type here"
 			class="input input-bordered w-full input-md"
 		/>
 	</label>
-	<label class="form-control w-full">
-		<div class="label">
-			<span class="label-text">Password</span>
-		</div>
-		<input
-			type="password"
-			name="password"
-			value="123456"
-			placeholder="Type here"
-			class="input input-bordered w-full input-md"
-		/>
-	</label>
-	<button class="btn btn-primary btn-sm mt-8">Register</button>
+	<button class="btn btn-primary btn-sm mt-8">Reset Password</button>
 </form>
