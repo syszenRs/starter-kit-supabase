@@ -1,5 +1,5 @@
-import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
+import { fail, redirect } from '@sveltejs/kit';
 
 export const actions: Actions = {
 	default: async ({ request, locals: { supabase } }) => {

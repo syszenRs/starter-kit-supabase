@@ -1,4 +1,25 @@
-<form method="POST" class="flex flex-col max-w-screen-sm gap-2">
+<script>
+	import { superForm } from 'sveltekit-superforms/client';
+	import { MessageQueue } from '$lib/stores/flash-message.svelte';
+	import { MessageType } from '$lib/dto/flash-message';
+
+	let data = $props();
+
+	const { form, errors, enhance } = superForm(data.data.form);
+
+	$effect(() => {
+		if (data.form?.error) {
+			MessageQueue.add(MessageType.error, {
+				title: 'Sign-in',
+				description: data.form.error
+			});
+
+			data.form.error = '';
+		}
+	});
+</script>
+
+<form method="POST" use:enhance class="flex flex-col max-w-screen-sm gap-2">
 	<label class="form-control w-full">
 		<div class="label">
 			<span class="label-text">Email</span>
@@ -6,9 +27,11 @@
 		<input
 			type="email"
 			name="email"
+			bind:value={$form.email}
 			placeholder="Type here"
 			class="input input-bordered w-full input-md"
 		/>
+		{#if $errors.email}<span class="label-text-alt text-red-500">{$errors.email}</span>{/if}
 	</label>
 	<label class="form-control w-full">
 		<div class="label">
@@ -17,9 +40,11 @@
 		<input
 			type="password"
 			name="password"
+			bind:value={$form.password}
 			placeholder="Type here"
 			class="input input-bordered w-full input-md"
 		/>
+		{#if $errors.password}<span class="label-text-alt text-red-500">{$errors.password}</span>{/if}
 	</label>
 	<button class="btn btn-primary btn-sm mt-8">Login</button>
 </form>

@@ -1,7 +1,6 @@
 <script>
-	export let data;
-
-	$: ({ session, user } = data);
+	let { data } = $props();
+	let { session, user } = $derived(data);
 </script>
 
 <p class="text-3xl font-bold text-center py-10">

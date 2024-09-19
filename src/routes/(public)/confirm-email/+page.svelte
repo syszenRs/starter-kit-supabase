@@ -10,7 +10,6 @@
 		const emailForCode = $page.url.searchParams.get('email') as string;
 		email = emailForCode;
 		hasEmail = !!email;
-		console.log('email', email, hasEmail);
 	});
 </script>
 

@@ -1,5 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { MessageQueue, MessageType } from '$lib/stores/flash-message.svelte.js';
+
+	let { form } = $props();
+
+	$effect(() => {
+		if (!form || !form.error) return;
+	});
 </script>
 
 <form method="POST" use:enhance class="flex flex-col max-w-screen-sm gap-2">

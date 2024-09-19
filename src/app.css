@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*** flash message */
+
+.flash-message {
+	padding: 8px 15px;
+	border-radius: 6px;
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+}
+
+.flash-message > [data-content] {
+	width: 100%;
+}
+
+section[aria-label='Notifications alt+T'] ol {
+	--width: 400px !important;
+}

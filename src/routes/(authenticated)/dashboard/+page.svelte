@@ -1,9 +1,7 @@
 <script>
-	export let data;
-
-	$: ({ user } = data);
+	let { data } = $props();
 </script>
 
-<p>Hey {user?.email} from dashboard!</p>
+<p>Hey {data.user?.email} from dashboard!</p>
 
 <a href="/change-email" class="btn btn-link"> Change email </a>

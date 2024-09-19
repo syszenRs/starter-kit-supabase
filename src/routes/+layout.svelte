@@ -1,11 +1,12 @@
-<script lang="ts">
-	import { enhance } from '$app/forms';
+<script>
 	import '../app.css';
-	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { enhance } from '$app/forms';
+	import { invalidate } from '$app/navigation';
+	import { FlashMessage } from '$lib/components/flash-message';
 
-	export let data;
-	$: ({ session, supabase } = data);
+	let { data, children } = $props();
+	let { session, supabase } = $derived(data);
 
 	onMount(() => {
 		const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
@@ -17,6 +18,8 @@
 		return () => data.subscription.unsubscribe();
 	});
 </script>
+
+<FlashMessage />
 
 <div class="flex justify-center py-6">
 	<a href="/" class="btn btn-link">Home</a>
@@ -31,4 +34,4 @@
 	<a href="/dashboard" class="btn btn-link">Dashboard</a>
 </div>
 
-<slot />
+{@render children()}
