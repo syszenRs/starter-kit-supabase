@@ -1,6 +1,6 @@
 import { toast } from 'svelte-sonner';
-import { MessageType, type defaultOptsDto, type FlashPromiseOptsDto } from '$lib/dto/flash-message';
-import { FlashMessageRender } from '$lib/components/flash-message';
+import { MessageType, type defaultOptsDto, type FlashPromiseOptsDto } from '$dto/flash-message';
+import { FlashMessageCustomRender } from '$lib/components/flash-message';
 
 type FlashMessageDto = {
 	id: number;
@@ -65,7 +65,7 @@ class FlashMessage {
 
 	private displayDefault(message: FlashMessageDto) {
 		const opts = message.opts as defaultOptsDto;
-		toast[message.type](FlashMessageRender, {
+		toast[message.type](FlashMessageCustomRender, {
 			componentProps: {
 				prop: opts
 			}

@@ -2,9 +2,9 @@ import { redirect, fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
 export const actions: Actions = {
-	default: async ({ locals: { supabase } }) => {
+	default: async ({ locals: { database } }) => {
 		console.log('signout');
-		const { error } = await supabase.auth.signOut();
+		const { error } = await database.auth.signOut();
 		if (error) {
 			fail(400, {
 				error:

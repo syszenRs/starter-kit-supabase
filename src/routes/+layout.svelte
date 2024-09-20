@@ -6,10 +6,10 @@
 	import { FlashMessage } from '$lib/components/flash-message';
 
 	let { data, children } = $props();
-	let { session, supabase } = $derived(data);
+	let { session, database } = $derived(data);
 
 	onMount(() => {
-		const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
+		const { data } = database.auth.onAuthStateChange((_, newSession) => {
 			if (newSession?.expires_at !== session?.expires_at) {
 				invalidate('supabase:auth');
 			}

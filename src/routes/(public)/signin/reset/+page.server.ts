@@ -1,11 +1,11 @@
 import type { Actions } from './$types';
 
 export const actions: Actions = {
-	default: async ({ request, locals: { supabase } }) => {
+	default: async ({ request, locals: { database } }) => {
 		const formData = await request.formData();
 		const email = formData.get('email') as string;
 
-		const response = await supabase.auth.resetPasswordForEmail(email);
+		const response = await database.auth.resetPasswordForEmail(email);
 
 		console.log('reset pw', response);
 

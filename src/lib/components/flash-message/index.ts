@@ -1,4 +1,4 @@
 import FlashMessage from './flash-message.svelte';
-import FlashMessageHtmlRender from './flash-message-html-render.svelte';
+import FlashMessageCustomRender from './flash-message-custom-render.svelte';
 
-export { FlashMessage, FlashMessageHtmlRender as FlashMessageRender };
+export { FlashMessage, FlashMessageCustomRender };

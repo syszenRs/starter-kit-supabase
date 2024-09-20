@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { defaultOptsDto } from '$lib/dto/flash-message';
+	import type { defaultOptsDto } from '$dto/flash-message';
 
 	let { prop }: { prop: defaultOptsDto } = $props();
 

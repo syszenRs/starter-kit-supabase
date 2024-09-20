@@ -2,12 +2,12 @@ import type { Actions } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 
 export const actions: Actions = {
-	default: async ({ request, locals: { supabase } }) => {
+	default: async ({ request, locals: { database } }) => {
 		const formData = await request.formData();
 		const confirmationCode = formData.get('code') as string;
 		const email = formData.get('email') as string;
 
-		const response = await supabase.auth.verifyOtp({
+		const response = await database.auth.verifyOtp({
 			type: 'signup',
 			token: confirmationCode,
 			email: email
@@ -20,7 +20,7 @@ export const actions: Actions = {
 			});
 		}
 
-		await supabase.auth.signOut();
+		await database.auth.signOut();
 		throw redirect(303, '/signin');
 	}
 };

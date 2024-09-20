@@ -1,7 +1,7 @@
 <script>
 	import { superForm } from 'sveltekit-superforms/client';
-	import { MessageQueue } from '$lib/stores/flash-message.svelte';
-	import { MessageType } from '$lib/dto/flash-message';
+	import { MessageQueue } from '$store/flash-message.svelte';
+	import { MessageType } from '$dto/flash-message';
 
 	let data = $props();
 
