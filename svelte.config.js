@@ -15,6 +15,7 @@ const config = {
 		alias: {
 			$service: 'src/lib/server/services',
 			$controller: 'src/lib/server/controllers',
+			$constant: 'src/lib/constants',
 			$store: 'src/lib/stores',
 			$schema: 'src/lib/schemas',
 			$dto: 'src/lib/dto'

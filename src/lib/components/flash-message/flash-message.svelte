@@ -4,6 +4,8 @@
 
 	const messages = MessageQueue.getMessageQueue();
 
+	//TODO: can't close toast inside the custom component
+
 	$effect(() => {
 		messages.forEach((message) => {
 			MessageQueue.display(message);
@@ -14,7 +16,6 @@
 <Toaster
 	richColors
 	position="top-right"
-	duration={500000}
 	toastOptions={{
 		class: 'flash-message'
 	}}

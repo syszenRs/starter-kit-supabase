@@ -17,6 +17,11 @@
 			data.form.error = '';
 		}
 	});
+
+	function setPersona() {
+		$form.email = 'test@email.com';
+		$form.password = 'Abc123!';
+	}
 </script>
 
 <form method="POST" use:enhance class="flex flex-col max-w-screen-sm gap-2">
@@ -52,3 +57,5 @@
 <div class="mt-3">
 	<a href="/signin/reset" class="btn btn-link">Forgot your password?</a>
 </div>
+
+<button onclick={setPersona} class="btn btn-sm max-w-screen-sm">Set login user</button>

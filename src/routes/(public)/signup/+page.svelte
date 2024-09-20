@@ -24,7 +24,7 @@
 		<input
 			type="password"
 			name="password"
-			value="123456"
+			value="Abc123!"
 			placeholder="Type here"
 			class="input input-bordered w-full input-md"
 		/>
