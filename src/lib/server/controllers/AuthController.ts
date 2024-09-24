@@ -1,19 +1,35 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
-import { loginSchema } from '$schema/auth';
-import { LOGIN_ERRORS } from '$constant/supabase-auth';
-import { redirect } from '@sveltejs/kit';
+import { authGenericSchema, confirmEmailSchema } from '$schema/auth';
 
 export class AuthController {
-	public static async signin(DBClient: SupabaseClient, form: z.infer<typeof loginSchema>) {
+	public static async signin(DBClient: SupabaseClient, data: z.infer<typeof authGenericSchema>) {
 		const response = await DBClient.auth.signInWithPassword({
-			email: form.email,
-			password: form.password
+			email: data.email,
+			password: data.password
 		});
 
-		//TODO: SHOULD URL BE HARDCODED ??
-		if (response.error?.code == LOGIN_ERRORS.EMAIL_NOT_CONFIRMED)
-			throw redirect(303, `/confirm-email?email=${form.email}`);
+		return response;
+	}
+
+	public static async signup(DBClient: SupabaseClient, data: z.infer<typeof authGenericSchema>) {
+		const response = await DBClient.auth.signUp({ email: data.email, password: data.password });
+
+		return response;
+	}
+
+	public static async signout(DBClient: SupabaseClient) {
+		const response = await DBClient.auth.signOut();
+
+		return response;
+	}
+
+	public static async confirmEmail(DBClient: SupabaseClient, data: z.infer<typeof confirmEmailSchema>) {
+		const response = await DBClient.auth.verifyOtp({
+			type: 'signup',
+			token: data.code,
+			email: data.email
+		});
 
 		return response;
 	}

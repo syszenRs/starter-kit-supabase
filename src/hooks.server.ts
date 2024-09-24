@@ -1,8 +1,9 @@
 import { createServerClient } from '@supabase/ssr';
-import { type Handle, redirect } from '@sveltejs/kit';
+import { type Handle, type HandleServerError, redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
+import { CLIENT_ERROR_CODE } from '$constant/http-code';
 //TODO: if supabase is down show a static page
 const supabase: Handle = async ({ event, resolve }) => {
 	/**
@@ -81,6 +82,20 @@ const authGuard: Handle = async ({ event, resolve }) => {
 	}
 
 	return resolve(event);
+};
+
+export const handleError: HandleServerError = async ({ status, message }) => {
+	//TODO: Add custom error loggin here if needed like sentry or others
+
+	if (status === CLIENT_ERROR_CODE.NOT_FOUND) {
+		message = `Its seems that you know more than us trying to acessing something that doesn't exists`;
+	} else {
+		message = 'Its seems that something bad happen here...';
+	}
+
+	return {
+		message: message
+	};
 };
 
 export const handle: Handle = sequence(supabase, authGuard);

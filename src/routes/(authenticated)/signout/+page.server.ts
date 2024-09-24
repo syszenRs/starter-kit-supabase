@@ -1,14 +1,14 @@
-import { redirect, fail } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import { redirect, error } from '@sveltejs/kit';
+import type { Actions, RequestEvent } from './$types';
+import { AuthService } from '$service/authService';
 
 export const actions: Actions = {
-	default: async ({ locals: { database } }) => {
-		console.log('signout');
-		const { error } = await database.auth.signOut();
-		if (error) {
-			fail(400, {
-				error:
-					'Logout failed. Please try again. If the issue persists, close your browser or contact support for help.'
+	default: async (event: RequestEvent) => {
+		const response = await AuthService.signout(event);
+
+		if (response.error) {
+			error(500, {
+				message: response.error
 			});
 		}
 

@@ -1,21 +1,27 @@
-import { fail, redirect } from '@sveltejs/kit';
-import type { Actions } from './$types';
+import { redirect } from '@sveltejs/kit';
+import type { Actions, PageServerLoad, RequestEvent } from './$types';
+import { AuthService } from '$service/authService';
+import { defaultValues, fail } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import { authGenericSchema } from '$schema/auth';
+
+export const load: PageServerLoad = async () => {
+	return {
+		form: defaultValues(zod(authGenericSchema))
+	};
+};
 
 export const actions: Actions = {
-	default: async ({ request, locals: { database } }) => {
-		const formData = await request.formData();
-		const email = formData.get('email') as string;
-		const password = formData.get('password') as string;
+	default: async (event: RequestEvent) => {
+		const result = await AuthService.signup(event);
 
-		const response = await database.auth.signUp({ email, password });
-
-		if (response.error) {
-			return fail(400, {
-				error:
-					'Oops, something went wrong during registration. Please check your email to see if you received a confirmation. If not, double-check your details and try again. If the problem continues, contact our support team for help.'
+		if (result.response?.error || !result.form.valid) {
+			return fail(result.errorCode, {
+				form: result.form,
+				error: result.errorMessage
 			});
 		} else {
-			throw redirect(303, `/confirm-email?email=${email}`);
+			throw redirect(303, `/confirm-email?email=${result.form.data.email}`);
 		}
 	}
 };

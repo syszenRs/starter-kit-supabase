@@ -1,5 +1,4 @@
-export enum LOGIN_ERRORS {
-	EMAIL_EXISTS = 'email_exists',
+export enum AUTH_ERRORS {
 	EMAIL_NOT_CONFIRMED = 'email_not_confirmed',
-	USER_ALREADY_EXISTS = 'user_already_exists'
+	RATE_LIMIT_EXCEEDED = 'rate_limit_exceeded'
 }

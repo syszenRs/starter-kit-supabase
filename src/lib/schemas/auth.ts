@@ -9,25 +9,30 @@ function checkPasswordComplexity(password: string): boolean {
 	return result;
 }
 
-export const loginSchema = z
-	.object({
-		email: z.string().email({ message: 'Please insert valid email.' }).trim(),
-		password: z
-			.string()
-			.max(20, { message: 'Password should have at max 20 characters' })
-			.min(6, { message: 'Password should have at least 6 characters' })
-	})
-	.superRefine((arg, ctx) => {
-		if (arg.password.length < 6) return;
-		if (!checkPasswordComplexity(arg.password)) {
-			ctx.addIssue({
-				code: z.ZodIssueCode.custom,
-				message:
-					'Password must include at least one uppercase letter, one lowercase letter, and one special character',
-				path: ['password']
-			});
-		}
-	});
+export const authGenericSchema = z.object({
+	email: z.string().email({ message: 'Please insert valid email.' }).trim(),
+	password: z
+		.string()
+		.max(20, { message: 'Password should have at max 20 characters' })
+		.min(6, { message: 'Password should have at least 6 characters' })
+});
+
+export const signupSchema = authGenericSchema.superRefine((arg, ctx) => {
+	if (arg.password.length < 6) return;
+	if (!checkPasswordComplexity(arg.password)) {
+		ctx.addIssue({
+			code: z.ZodIssueCode.custom,
+			message:
+				'Password must include at least one uppercase letter, one lowercase letter, and one special character',
+			path: ['password']
+		});
+	}
+});
+
+export const confirmEmailSchema = z.object({
+	email: z.string().email().trim(),
+	code: z.string().length(6)
+});
 
 /* 	const customErrorMap = (issue, ctx) => {
 	if (issue.code === z.ZodIssueCode.invalid_type) {

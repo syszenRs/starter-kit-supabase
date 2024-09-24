@@ -1,22 +1,12 @@
 <script>
 	import { superForm } from 'sveltekit-superforms/client';
-	import { MessageQueue } from '$store/flash-message.svelte';
-	import { MessageType } from '$dto/flash-message';
+	import { useFormErrorHook } from '$lib/utils/hooks';
 
 	let data = $props();
 
 	const { form, errors, enhance } = superForm(data.data.form);
 
-	$effect(() => {
-		if (data.form?.error) {
-			MessageQueue.add(MessageType.error, {
-				title: 'Sign-in',
-				description: data.form.error
-			});
-
-			data.form.error = '';
-		}
-	});
+	$effect(useFormErrorHook(data, 'Signin'));
 
 	function setPersona() {
 		$form.email = 'test@email.com';
@@ -29,26 +19,14 @@
 		<div class="label">
 			<span class="label-text">Email</span>
 		</div>
-		<input
-			type="email"
-			name="email"
-			bind:value={$form.email}
-			placeholder="Type here"
-			class="input input-bordered w-full input-md"
-		/>
+		<input type="email" name="email" bind:value={$form.email} placeholder="Type here" class="input input-bordered w-full input-md" />
 		{#if $errors.email}<span class="label-text-alt text-red-500">{$errors.email}</span>{/if}
 	</label>
 	<label class="form-control w-full">
 		<div class="label">
 			<span class="label-text">Password</span>
 		</div>
-		<input
-			type="password"
-			name="password"
-			bind:value={$form.password}
-			placeholder="Type here"
-			class="input input-bordered w-full input-md"
-		/>
+		<input type="password" name="password" bind:value={$form.password} placeholder="Type here" class="input input-bordered w-full input-md" />
 		{#if $errors.password}<span class="label-text-alt text-red-500">{$errors.password}</span>{/if}
 	</label>
 	<button class="btn btn-primary btn-sm mt-8">Login</button>

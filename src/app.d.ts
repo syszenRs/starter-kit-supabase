@@ -2,7 +2,9 @@ import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
 
 declare global {
 	namespace App {
-		// interface Error {}
+		interface Error {
+			message: string;
+		}
 		interface Locals {
 			database: SupabaseClient;
 			safeGetSession: () => Promise<{ session: Session | null; user: User | null }>;
