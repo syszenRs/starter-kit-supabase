@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Toaster } from 'svelte-sonner';
 	import { MessageQueue } from '$store/flash-message.svelte';
-	import { page } from '$app/stores';
 
 	const messages = MessageQueue.getMessageQueue();
 
