@@ -27,6 +27,7 @@
 		"prettier-plugin-svelte": "^3.1.2",
 		"svelte": "^5.0.0-next.1",
 		"svelte-check": "^4.0.0",
+		"svelte-sonner": "^0.3.27",
 		"sveltekit-superforms": "^2.18.1",
 		"tailwindcss": "^3.4.10",
 		"typescript": "^5.0.0",
@@ -37,7 +38,6 @@
 	"type": "module",
 	"dependencies": {
 		"@supabase/ssr": "^0.5.1",
-		"@supabase/supabase-js": "^2.45.3",
-		"svelte-sonner": "^0.3.27"
+		"@supabase/supabase-js": "^2.45.3"
 	}
 }
