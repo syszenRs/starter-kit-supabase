@@ -1,4 +1,4 @@
-##### This startup kit have implemented the following features
+### This startup kit have implemented the following features
 
 - Sign In
   Users enter their email and password to authenticate
@@ -18,7 +18,7 @@
 - Logout
   Users terminate their session and logging them out of the app.
 
-###### This features would be great to add
+#### This features would be great to add
 
 - One-Time Password (OTP) Authentication
   -- OTP-based Sign In: Instead of password-based authentication, allow users to log in using an OTP sent to their registered email or phone number. This is particularly useful for mobile-first apps.
@@ -50,7 +50,7 @@
   -- Account Linking: If your users have multiple accounts (e.g., social logins combined with email/password logins), give them an option to link or merge these accounts into one for a smoother user experience.
   -- Automatic Account Merge: If users sign up using an email they’ve previously signed in with via social login, automatically link the accounts and avoid duplicate profiles.
 
-##### Because this is using supabase, this features already come included
+### Because this is using supabase, this features already come included
 
 - Session Management & Security
   -- Session Expiration: Implement session timeout after a period of inactivity. It can also include a "Remember Me" option for persistent sessions.
