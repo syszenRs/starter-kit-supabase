@@ -4,7 +4,7 @@ import { sequence } from '@sveltejs/kit/hooks';
 
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
 import { CLIENT_ERROR_CODE } from '$constant/http-code';
-//TODO: if supabase is down show a static page
+//TODO: if DB Service is down show a static page
 const supabase: Handle = async ({ event, resolve }) => {
 	/**
 	 * Creates a Supabase client specific to this server request.

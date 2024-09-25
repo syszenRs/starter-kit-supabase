@@ -1,8 +1,12 @@
 # Starter kit
 
-This is a development starter kit. just clone this and start [Configure your environment](md/env-configuration.md)
+This is a development starter kit with the most common auth flows. You can check the implemented features in [this document](md/features.md)
 
-Created using Svelte[Kit]
-Supabase (with local development env)
-Superforms + zod
-tailwindCSS + daisyUI
+To start just clone this and [Configure your environment](md/env-configuration.md)
+
+##### this was created using
+
+-- Svelte[Kit]
+-- Supabase (with local development env)
+-- Superforms + zod
+-- tailwindCSS + daisyUI
