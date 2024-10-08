@@ -1,17 +1,10 @@
 <script lang="ts">
-	import { useFormErrorHook } from '$lib/utils/hooks';
-	import { superForm } from 'sveltekit-superforms';
+	import { defaultValues, superForm } from 'sveltekit-superforms';
+	import SampleUsers from '$lib/components/sample-users.svelte';
+	import { authBaseSchema } from '$schema/auth';
+	import { zod } from 'sveltekit-superforms/adapters';
 
-	let data = $props();
-
-	const { form, errors, enhance } = superForm(data.data.form);
-
-	$effect(useFormErrorHook(data, 'Signup'));
-
-	function setPersona() {
-		$form.email = 'test@email.com';
-		$form.password = 'Abc123!';
-	}
+	const { form, errors, enhance } = superForm(defaultValues(zod(authBaseSchema)));
 </script>
 
 <form method="POST" use:enhance class="flex flex-col max-w-screen-sm gap-2">
@@ -32,4 +25,4 @@
 	<button class="btn btn-primary btn-sm mt-8">Register</button>
 </form>
 
-<button onclick={setPersona} class="btn btn-sm max-w-screen-sm mt-3">Set existing user</button>
+<SampleUsers {form} />

@@ -3,7 +3,8 @@ import { type Handle, type HandleServerError, redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
-import { CLIENT_ERROR_CODE } from '$constant/http-code';
+import { CLIENT_ERROR_CODE, REDIRECT_CODE } from '$constant/http-code';
+import { APP_REDIRECT } from '$constant/app-redirect-url';
 //TODO: if DB Service is down show a static page
 const supabase: Handle = async ({ event, resolve }) => {
 	/**
@@ -73,12 +74,12 @@ const authGuard: Handle = async ({ event, resolve }) => {
 	const isAccessingAuthenticatedPages = event.route.id?.includes('(authenticated)');
 
 	if (!event.locals.session && isAccessingAuthenticatedPages) {
-		throw redirect(303, '/signin');
+		throw redirect(CLIENT_ERROR_CODE.UNAUTHORIZED, APP_REDIRECT.SIGNIN);
 	}
 
-	//TODO: make this more dynamic and in the future we could have accessible pages like abouts, policy etc
+	//TODO: make this more dynamic somehow
 	if (event.locals.session && !isAccessingAuthenticatedPages) {
-		throw redirect(303, '/dashboard');
+		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.DASHBOARD);
 	}
 
 	return resolve(event);

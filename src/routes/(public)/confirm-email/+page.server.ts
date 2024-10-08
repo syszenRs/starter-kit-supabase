@@ -1,27 +1,59 @@
-import { confirmEmailSchema } from '$schema/auth';
-import { AuthService } from '$service/authService';
-import { zod } from 'sveltekit-superforms/adapters';
+import { AuthService } from '$service/AuthService';
 import type { Actions, PageServerLoad, RequestEvent } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
-import { defaultValues } from 'sveltekit-superforms';
+import { MessageType } from '$dto/flash-message';
+import { REDIRECT_CODE } from '$constant/http-code';
+import { cookieUtils } from '$lib/server/utils/cookies';
+import { APP_REDIRECT } from '$constant/app-redirect-url';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ cookies }: RequestEvent) => {
+	const userEmail = cookieUtils.getAndDestroy(cookies, 'ECF_UE');
+
+	if (!userEmail) throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.SIGNIN);
+
 	return {
-		form: defaultValues(zod(confirmEmailSchema))
+		email: userEmail
 	};
 };
 
 export const actions: Actions = {
-	default: async (event: RequestEvent) => {
+	confirmCode: async (event: RequestEvent) => {
 		const result = await AuthService.confirmEmail(event);
 
-		if (!result.form.valid || result.response?.error) {
-			return fail(result.errorCode, {
+		if (!result.form.valid || result.errorMessage) {
+			return fail(result.statusCode, {
 				form: result.form,
-				error: result.errorMessage
+				flashMessage: {
+					title: 'Email confirmation',
+					description: result.errorMessage,
+					type: MessageType.error
+				}
 			});
 		}
 
-		throw redirect(303, '/signin');
+		//TODO: work on a way to send flash message from server side, prob via cookie and on get request on hooks/layout? get it, delete it and pass it down to an $effect hook
+		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.SIGNIN);
+	},
+	resendCode: async (event: RequestEvent) => {
+		const result = await AuthService.resendSignupConfirmCode(event);
+
+		if (!result.form.valid || result.errorMessage) {
+			return fail(result.statusCode, {
+				form: result.form,
+				flashMessage: {
+					title: 'Resend email code',
+					description: result.errorMessage,
+					type: MessageType.error
+				}
+			});
+		}
+
+		return {
+			flashMessage: {
+				title: 'Resend email code',
+				description: 'Check your email for the new code',
+				type: MessageType.success
+			}
+		};
 	}
 };

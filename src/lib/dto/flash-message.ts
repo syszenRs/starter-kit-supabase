@@ -7,7 +7,7 @@ export enum MessageType {
 	promise = 'promise'
 }
 
-export type defaultOptsDto = {
+export type DefaultOptsDto = {
 	title?: string;
 	description: string;
 	action?: {
@@ -22,3 +22,7 @@ export type FlashPromiseOptsDto = {
 	success: (data: unknown) => string;
 	error: string;
 };
+
+export type FlashMessagePropsDto = {
+	type: MessageType;
+} & DefaultOptsDto;

@@ -1,83 +1,62 @@
 import { toast } from 'svelte-sonner';
-import { MessageType, type defaultOptsDto, type FlashPromiseOptsDto } from '$dto/flash-message';
+import { MessageType, type DefaultOptsDto, type FlashPromiseOptsDto } from '$dto/flash-message';
 import { FlashMessageCustomRender } from '$lib/components/flash-message';
 
 type FlashMessageDto = {
-	id: number;
 	type: MessageType;
-	opts: defaultOptsDto | FlashPromiseOptsDto;
+	opts: DefaultOptsDto | FlashPromiseOptsDto;
 	promise?: Promise<unknown>;
+	displayFunction: (message: FlashMessageDto) => void;
 };
 
-class FlashMessage {
-	private messagesQueue = $state<Array<FlashMessageDto>>([]);
-	private currentId = 0;
+class FlashMessageQueue {
+	private _messagesQueue = $state<Array<FlashMessageDto>>([]);
+	public queueCounter = $derived.by(() => this._messagesQueue.length);
 
-	public constructor() {
-		this.currentId = 0;
-	}
-
-	public getMessageQueue() {
-		return this.messagesQueue;
-	}
-
-	public add(type: MessageType, opts: defaultOptsDto) {
-		if (!opts.description || opts.description == '')
-			throw new Error('No description provided for flash message');
+	public add(type: MessageType, opts: DefaultOptsDto) {
+		if (!opts.description || opts.description == '') throw new Error('No description provided for flash message');
 		if (!(type in MessageType)) type = MessageType.info;
 
-		this.currentId++;
 		const messageToAdd: FlashMessageDto = {
-			id: this.currentId,
 			type,
-			opts
+			opts,
+			displayFunction: this._displayDefault
 		};
-
-		this.messagesQueue.push(messageToAdd);
+		this._messagesQueue.push(messageToAdd);
 	}
 
 	public addPromise(promise: Promise<unknown>, opts: FlashPromiseOptsDto) {
 		if (!promise) throw new Error('No promise provided for promise flash message');
 
-		this.currentId++;
 		const messageToAdd: FlashMessageDto = {
-			id: this.currentId,
 			type: MessageType.promise,
 			opts,
-			promise
+			promise,
+			displayFunction: this._displayPromise
 		};
 
-		this.messagesQueue.push(messageToAdd);
+		this._messagesQueue.push(messageToAdd);
 	}
 
-	public display(message: FlashMessageDto) {
-		if (message.type == MessageType.promise) {
-			this.displayPromise(message);
-		} else {
-			this.displayDefault(message);
-		}
-		this.delete(message.id);
+	public displayNextOnQueue() {
+		const message = this._messagesQueue.shift();
+		if (!message) return;
+
+		message.displayFunction(message);
 	}
 
-	private displayPromise(message: FlashMessageDto) {
+	private _displayPromise(message: FlashMessageDto) {
 		toast.promise(message.promise!, message.opts);
 	}
 
-	private displayDefault(message: FlashMessageDto) {
-		const opts = message.opts as defaultOptsDto;
+	private _displayDefault(message: FlashMessageDto) {
+		const opts = message.opts as DefaultOptsDto;
 		toast[message.type](FlashMessageCustomRender, {
 			componentProps: {
 				prop: opts
 			}
 		});
 	}
-
-	private delete(id: number) {
-		const index = this.messagesQueue.findIndex((message) => message.id === id);
-		if (index < 0) return;
-
-		this.messagesQueue.splice(index, 1);
-	}
 }
 
-export const MessageQueue = new FlashMessage();
+export const flashMessageQueue = new FlashMessageQueue();

@@ -18,7 +18,8 @@ const config = {
 			$constant: 'src/lib/constants',
 			$store: 'src/lib/stores',
 			$schema: 'src/lib/schemas',
-			$dto: 'src/lib/dto'
+			$dto: 'src/lib/dto',
+			$serverDto: 'src/lib/server/dto'
 		}
 	}
 };

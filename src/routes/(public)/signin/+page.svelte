@@ -1,17 +1,11 @@
 <script>
-	import { superForm } from 'sveltekit-superforms/client';
-	import { useFormErrorHook } from '$lib/utils/hooks';
+	import { defaultValues, superForm } from 'sveltekit-superforms/client';
+	import SampleUsers from '$lib/components/sample-users.svelte';
+	import { authBaseSchema } from '$schema/auth';
+	import { zod } from 'sveltekit-superforms/adapters';
+	import { APP_REDIRECT } from '$constant/app-redirect-url';
 
-	let data = $props();
-
-	const { form, errors, enhance } = superForm(data.data.form);
-
-	$effect(useFormErrorHook(data, 'Signin'));
-
-	function setPersona() {
-		$form.email = 'test@email.com';
-		$form.password = 'Abc123!';
-	}
+	const { form, errors, enhance } = superForm(defaultValues(zod(authBaseSchema)));
 </script>
 
 <form method="POST" use:enhance class="flex flex-col max-w-screen-sm gap-2">
@@ -33,7 +27,7 @@
 </form>
 
 <div class="mt-3">
-	<a href="/signin/reset" class="btn btn-link">Forgot your password?</a>
+	<a href={APP_REDIRECT.RESET_PASSWORD} class="btn btn-link">Forgot your password?</a>
 </div>
 
-<button onclick={setPersona} class="btn btn-sm max-w-screen-sm">Set login user</button>
+<SampleUsers {form} />

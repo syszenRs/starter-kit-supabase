@@ -1,27 +1,34 @@
+import type { Actions, RequestEvent } from './$types';
+import { AuthService } from '$service/AuthService';
+import { fail } from 'sveltekit-superforms';
+import { MessageType } from '$dto/flash-message';
+import { REDIRECT_CODE } from '$constant/http-code';
 import { redirect } from '@sveltejs/kit';
-import type { Actions, PageServerLoad, RequestEvent } from './$types';
-import { AuthService } from '$service/authService';
-import { defaultValues, fail } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
-import { authGenericSchema } from '$schema/auth';
-
-export const load: PageServerLoad = async () => {
-	return {
-		form: defaultValues(zod(authGenericSchema))
-	};
-};
+import { APP_REDIRECT } from '$constant/app-redirect-url';
+import { COOKIE } from '$constant/cookies';
 
 export const actions: Actions = {
 	default: async (event: RequestEvent) => {
 		const result = await AuthService.signup(event);
 
-		if (result.response?.error || !result.form.valid) {
-			return fail(result.errorCode, {
+		if (result.response?.error || result.errorMessage)
+			return fail(result.statusCode, {
 				form: result.form,
-				error: result.errorMessage
+				flashMessage: {
+					title: 'Signup',
+					description: result.errorMessage,
+					type: MessageType.error
+				}
 			});
-		} else {
-			throw redirect(303, `/confirm-email?email=${result.form.data.email}`);
-		}
+
+		event.cookies.set(COOKIE.CONFIRM_EMAIL, result.form.data.email, {
+			secure: false,
+			maxAge: 60 * 60 * 1, //1h
+			priority: 'low',
+			sameSite: 'strict',
+			path: '/'
+		});
+
+		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.CONFIRM_EMAIL);
 	}
 };

@@ -1,38 +1,54 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { useFormErrorHook } from '$lib/utils/hooks';
+	import type { EnhanceArgsDto, EnhanceResultDto } from '$dto/svelte';
 	import { onMount } from 'svelte';
-	import { superForm } from 'sveltekit-superforms';
+	import { enhance as SKEnhance } from '$app/forms';
+	import { defaultValues, superForm, superValidate } from 'sveltekit-superforms';
+	import { zod } from 'sveltekit-superforms/adapters';
+	import { MessageType, type FlashMessagePropsDto } from '$dto/flash-message';
+	import { emailCodeSchema, emailSchema } from '$schema/auth';
+	import { flashMessageQueue } from '$store/flash-message.svelte';
+	import { goto } from '$app/navigation';
+	import { APP_REDIRECT } from '$constant/app-redirect-url.js';
 
-	let data = $props();
+	let { data } = $props();
 
-	const { form, errors, enhance } = superForm(data.data.form);
-
-	let hasEmail = $state(true);
-
-	$effect(useFormErrorHook(data, 'Email confirmation'));
+	const { form, errors, enhance } = superForm(defaultValues(zod(emailCodeSchema)));
 
 	onMount(() => {
-		const emailForCode = $page.url.searchParams.get('email') as string;
-		$form.email = emailForCode;
-		hasEmail = !!$form.email;
+		$form.email = data.email!;
 	});
+
+	async function resendCodehook({ formData, cancel }: EnhanceArgsDto) {
+		formData.append('email', $form.email);
+		const result = await superValidate(formData, zod(emailSchema));
+
+		if (!result.valid) {
+			cancel();
+			flashMessageQueue.add(MessageType.error, {
+				title: 'Resend confirmation code',
+				description: 'It seems that we lost your email somehow..<br>Please try to sign in, so we can identify you'
+			});
+			return goto(APP_REDIRECT.SIGNIN);
+		}
+
+		return async ({ result }: EnhanceResultDto) => {
+			//TODO: this fuking error is anoying
+			const messageData = result.data.flashMessage as FlashMessagePropsDto;
+
+			flashMessageQueue.add(messageData.type, {
+				title: messageData.title,
+				description: messageData.description
+			});
+		};
+	}
 </script>
 
-<form method="POST" use:enhance class="flex flex-col max-w-screen-sm gap-2">
-	<label class="form-control w-full {hasEmail ? 'hidden' : ''}">
-		<div class="label">
-			<span class="label-text">Email</span>
-		</div>
-		<input
-			type={hasEmail ? 'hidden' : 'email'}
-			name="email"
-			bind:value={$form.email}
-			placeholder="Type here"
-			class="input input-bordered w-full input-md {hasEmail ? 'hidden' : ''}"
-		/>
-		{#if $errors.email}<span class="label-text-alt text-red-500">{$errors.email}</span>{/if}
-	</label>
+<div class="mb-4">
+	<p class="text-xl font-bold">Email confirmation</p>
+</div>
+
+<form method="POST" action="?/confirmCode" use:enhance class="flex flex-col max-w-screen-sm gap-2">
+	<input type="hidden" name="email" bind:value={$form.email} placeholder="Type here" class="input input-bordered w-full input-md hidden" />
 	<label class="form-control w-full">
 		<div class="label">
 			<span class="label-text">Code</span>
@@ -41,4 +57,7 @@
 		{#if $errors.code}<span class="label-text-alt text-red-500">{$errors.code}</span>{/if}
 	</label>
 	<button class="btn btn-primary btn-sm mt-8">Confirm</button>
+</form>
+<form method="POST" action="?/resendCode" use:SKEnhance={resendCodehook}>
+	<button type="submit" class="btn btn-link btn-sm mt-8">Resend code</button>
 </form>

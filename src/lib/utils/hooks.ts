@@ -1,22 +1,18 @@
-import { MessageType } from '$dto/flash-message';
-import { MessageQueue } from '$store/flash-message.svelte';
+import type { FlashMessagePropsDto } from '$dto/flash-message';
+import { flashMessageQueue } from '$store/flash-message.svelte';
 
-type hookFormErrorDto = {
+type hookFormDataFlashMessageDto = {
 	form?: {
-		error: string;
+		flashMessage?: FlashMessagePropsDto;
 	};
 };
 
-export function useFormErrorHook(data: hookFormErrorDto, title: string) {
+//change data to {form}
+export function useListenToFormFlashMessageHook(propsFormData: hookFormDataFlashMessageDto) {
 	return () => {
-		if (data.form?.error) {
-			MessageQueue.add(MessageType.error, {
-				title,
-				description: data.form.error
-			});
-
-			// Clear the error after handling it
-			data.form.error = '';
-		}
+		if (!propsFormData.form?.flashMessage) return;
+		flashMessageQueue.add(propsFormData.form.flashMessage.type, propsFormData.form.flashMessage);
+		// Clear the error after handling it
+		propsFormData.form.flashMessage = undefined;
 	};
 }
