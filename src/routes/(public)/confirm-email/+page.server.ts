@@ -2,7 +2,7 @@ import { AuthService } from '$service/AuthService';
 import type { Actions, PageServerLoad, RequestEvent } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import { MessageType } from '$dto/flash-message';
-import { REDIRECT_CODE } from '$constant/http-code';
+import { REDIRECT_CODE, SUCCESSFULL_CODE } from '$constant/http-code';
 import { cookieUtils } from '$lib/server/utils/cookies';
 import { APP_REDIRECT } from '$constant/app-redirect-url';
 
@@ -20,7 +20,7 @@ export const actions: Actions = {
 	confirmCode: async (event: RequestEvent) => {
 		const result = await AuthService.confirmEmail(event);
 
-		if (!result.form.valid || result.errorMessage) {
+		if (result.statusCode !== SUCCESSFULL_CODE.OK) {
 			return fail(result.statusCode, {
 				form: result.form,
 				flashMessage: {
@@ -37,7 +37,7 @@ export const actions: Actions = {
 	resendCode: async (event: RequestEvent) => {
 		const result = await AuthService.resendSignupConfirmCode(event);
 
-		if (!result.form.valid || result.errorMessage) {
+		if (result.statusCode !== SUCCESSFULL_CODE.OK) {
 			return fail(result.statusCode, {
 				form: result.form,
 				flashMessage: {

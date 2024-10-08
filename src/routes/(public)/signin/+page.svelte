@@ -27,7 +27,7 @@
 </form>
 
 <div class="mt-3">
-	<a href={APP_REDIRECT.RESET_PASSWORD} class="btn btn-link">Forgot your password?</a>
+	<a href={APP_REDIRECT.RESET_PASSWORD_TRIGGER} class="btn btn-link">Forgot your password?</a>
 </div>
 
 <SampleUsers {form} />

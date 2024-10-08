@@ -74,14 +74,14 @@ export class AuthService {
 		return response;
 	}
 
-	public static async signout({ locals }: RequestEvent): Promise<{ error: string }> {
+	public static async signout({ locals }: RequestEvent): Promise<{ statusCode: number; error: string }> {
 		const res = await AuthController.signout(locals.database);
 
+		const hasError = res.error || res.response?.error;
+
 		return {
-			error:
-				res.error || res.response?.error
-					? 'Logout failed. Please try again.<br>If the issue persists, close your browser or contact support for help.'
-					: ''
+			statusCode: hasError ? CLIENT_ERROR_CODE.BAD_REQUEST : SUCCESSFULL_CODE.OK,
+			error: hasError ? 'Logout failed. Please try again.<br>If the issue persists, close your browser or contact support for help.' : ''
 		};
 	}
 

@@ -5,5 +5,6 @@ export const APP_REDIRECT = {
 	DASHBOARD: '/dashboard',
 	CONFIRM_EMAIL: '/confirm-email',
 	CHANGE_EMAIL: '/change-email',
-	RESET_PASSWORD: '/signin/reset'
+	RESET_PASSWORD_TRIGGER: '/signin/reset',
+	RESET_PASSWORD_PAGE: '/reset-password'
 };
