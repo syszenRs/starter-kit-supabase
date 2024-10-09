@@ -73,12 +73,11 @@ const authGuard: Handle = async ({ event, resolve }) => {
 
 	const isAccessingAuthenticatedPages = event.route.id?.includes('(authenticated)');
 
-	if (!event.locals.session && isAccessingAuthenticatedPages) {
-		throw redirect(CLIENT_ERROR_CODE.UNAUTHORIZED, APP_REDIRECT.SIGNIN);
+	if (!session && isAccessingAuthenticatedPages) {
+		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.SIGNIN);
 	}
 
-	//TODO: make this more dynamic somehow
-	if (event.locals.session && !isAccessingAuthenticatedPages) {
+	if (session && !isAccessingAuthenticatedPages) {
 		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.DASHBOARD);
 	}
 

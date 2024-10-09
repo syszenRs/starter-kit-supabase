@@ -12,29 +12,30 @@ export const actions: Actions = {
 	default: async (event: RequestEvent) => {
 		const result = await AuthService.signin(event);
 
-		if (result.statusCode !== SUCCESSFULL_CODE.OK)
-			if (result.response?.error?.code === AUTH_ERRORS.EMAIL_NOT_CONFIRMED) {
-				event.cookies.set(COOKIE.CONFIRM_EMAIL, result.form.data.email, {
-					secure: false,
-					maxAge: 60 * 60 * 1, //1h
-					priority: 'low',
-					sameSite: 'strict',
-					path: '/'
-				});
+		if (result.statusCode !== SUCCESSFULL_CODE.OK) {
+			return fail(result.statusCode, {
+				form: result.form,
+				flashMessage: {
+					title: 'Signin',
+					description: result.errorMessage,
+					type: MessageType.error
+				}
+			});
+		} else if (result.response?.error?.code === AUTH_ERRORS.EMAIL_NOT_CONFIRMED) {
+			console.log('asda');
+			event.cookies.set(COOKIE.CONFIRM_EMAIL, result.form.data.email, {
+				secure: false,
+				maxAge: 60 * 60 * 1, //1h
+				priority: 'low',
+				sameSite: 'strict',
+				path: '/'
+			});
+			console.log('asda213');
+			//TODO: SHOULD URL BE HARDCODED ??
+			throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.CONFIRM_EMAIL);
+		}
 
-				//TODO: SHOULD URL BE HARDCODED ??
-				throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.CONFIRM_EMAIL);
-			} else {
-				return fail(result.statusCode, {
-					form: result.form,
-					flashMessage: {
-						title: 'Signin',
-						description: result.errorMessage,
-						type: MessageType.error
-					}
-				});
-			}
-
+		console.log('0noo');
 		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.DASHBOARD);
 	}
 };

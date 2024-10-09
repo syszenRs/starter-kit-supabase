@@ -5,9 +5,10 @@ import { MessageType } from '$dto/flash-message';
 import { REDIRECT_CODE, SUCCESSFULL_CODE } from '$constant/http-code';
 import { cookieUtils } from '$lib/server/utils/cookies';
 import { APP_REDIRECT } from '$constant/app-redirect-url';
+import { COOKIE } from '$constant/cookies';
 
 export const load: PageServerLoad = async ({ cookies }: RequestEvent) => {
-	const userEmail = cookieUtils.getAndDestroy(cookies, 'ECF_UE');
+	const userEmail = cookieUtils.getAndDestroy(cookies, COOKIE.CONFIRM_EMAIL);
 
 	if (!userEmail) throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.SIGNIN);
 
