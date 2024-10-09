@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { EnhanceArgsDto, EnhanceResultDto } from '$dto/svelte';
+	import type { SubmitFunction } from '@sveltejs/kit';
 	import { onMount } from 'svelte';
 	import { enhance as SKEnhance } from '$app/forms';
 	import { defaultValues, superForm, superValidate } from 'sveltekit-superforms';
@@ -18,7 +18,7 @@
 		$form.email = data.email!;
 	});
 
-	async function resendCodehook({ formData, cancel }: EnhanceArgsDto) {
+	const resendCodehook: SubmitFunction = async ({ formData, cancel }) => {
 		formData.append('email', $form.email);
 		const result = await superValidate(formData, zod(emailSchema));
 
@@ -31,16 +31,24 @@
 			return goto(APP_REDIRECT.SIGNIN);
 		}
 
-		return async ({ result }: EnhanceResultDto) => {
+		return async ({ result }) => {
 			//TODO: this fuking error is anoying
-			const messageData = result.data.flashMessage as FlashMessagePropsDto;
 
-			flashMessageQueue.add(messageData.type, {
-				title: messageData.title,
-				description: messageData.description
-			});
+			if (result.type === 'success' && 'data' in result) {
+				const messageData = result.data?.flashMessage as FlashMessagePropsDto;
+
+				flashMessageQueue.add(messageData.type, {
+					title: messageData.title,
+					description: messageData.description
+				});
+			} else {
+				flashMessageQueue.add(MessageType.error, {
+					title: 'Resend code',
+					description: 'Something happen on our side.<br>Please try again later, if the issue persist contact our support.'
+				});
+			}
 		};
-	}
+	};
 </script>
 
 <div class="mb-4">

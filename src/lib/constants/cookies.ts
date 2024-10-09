@@ -1,3 +1,3 @@
 export const COOKIE = {
-	CONFIRM_EMAIL: 'ECF_UE'
+	CONFIRM_EMAIL: 'CF_UE' //Confirm email - user email
 };

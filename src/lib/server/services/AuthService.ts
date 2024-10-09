@@ -1,11 +1,12 @@
 import type { RequestEvent } from '@sveltejs/kit';
-import type { AuthResponseDto, ConfirmEmailResponseDto, ResetEmailResponseDto } from '$lib/server/dto/auth';
+import type { AuthResponseDto, ConfirmEmailResponseDto, ResetEmailResponseDto, resetPassword } from '$lib/server/dto/auth';
 import { superValidate, type SuperValidated } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { authBaseSchema, emailCodeSchema, emailSchema, signupSchema } from '$schema/auth';
+import { authBaseSchema, emailCodeSchema, emailSchema, resetEmailSchema, signupSchema } from '$schema/auth';
 import { AuthController } from '$controller/AuthController';
 import { CLIENT_ERROR_CODE, SERVER_ERROR_CODE, SUCCESSFULL_CODE } from '$constant/http-code';
 import { AUTH_ERRORS } from '$constant/supabase-auth';
+import { UserController } from '$controller/UserController';
 
 export class AuthService {
 	private static genericError = 'Something bad happen in our side.<br>Please consider contacting support to report.';
@@ -92,7 +93,7 @@ export class AuthService {
 
 		if (!form.valid) return response;
 
-		const res = await AuthController.confirmEmail(event.locals.database, form.data);
+		const res = await AuthController.verifySignupEmail(event.locals.database, form.data);
 
 		if (res.response) {
 			response.response = res.response;
@@ -134,14 +135,14 @@ export class AuthService {
 		return response;
 	}
 
-	public static async EmailResetPassword({ request, locals }: RequestEvent): Promise<ResetEmailResponseDto> {
+	public static async sendEmailResetPassword({ request, locals }: RequestEvent): Promise<ResetEmailResponseDto> {
 		const form = await superValidate(request, zod(emailSchema));
 
 		const response = this._getDefaultResponse(form) as ResetEmailResponseDto;
 
 		if (!form.valid) return response;
 
-		const res = await AuthController.EmailResetPassword(locals.database, form.data);
+		const res = await AuthController.sendEmailResetPassword(locals.database, form.data);
 
 		if (res.response) {
 			response.statusCode = res.response.error?.status ? res.response.error.status : SUCCESSFULL_CODE.OK;
@@ -152,6 +153,44 @@ export class AuthService {
 			response.statusCode = SERVER_ERROR_CODE.INTERNAL_SERVER_ERROR;
 			response.errorMessage = this.genericError;
 		}
+
+		return response;
+	}
+
+	public static async resetPassword(event: RequestEvent, tokenUrlParam: string): Promise<resetPassword> {
+		const form = await superValidate(event.request, zod(resetEmailSchema));
+
+		const response = this._getDefaultResponse(form) as resetPassword;
+		if (form.data.token !== tokenUrlParam) {
+			response.errorMessage = "We couldn't verify your token.<br>Try again later, if the issue persists consider contact support for help.";
+			return response;
+		}
+
+		if (!form.valid) return response;
+
+		const resTokenVerification = await AuthController.verifyResetPasswordToken(event.locals.database, form.data.token);
+
+		if (resTokenVerification.error || resTokenVerification.response?.error) {
+			response.statusCode = SERVER_ERROR_CODE.INTERNAL_SERVER_ERROR;
+			response.errorMessage = "We couldn't verify your token.<br>Try again later, if the issue persists consider contact support for help.";
+			return response;
+		}
+
+		const resUpdateUser = await UserController.updateUser(event.locals.database, { password: form.data.password });
+
+		if (resUpdateUser.response) {
+			response.statusCode = resUpdateUser.response.error?.status ? resUpdateUser.response.error.status : SUCCESSFULL_CODE.OK;
+			if (resUpdateUser.response.error) {
+				response.errorMessage =
+					'We were unable to reset your password.<br>Please try again, if the issue persists consider contact support for help.';
+			}
+		} else {
+			response.statusCode = SERVER_ERROR_CODE.INTERNAL_SERVER_ERROR;
+			response.errorMessage = this.genericError;
+		}
+
+		//Confirm email signins the user so we need to signout
+		await this.signout(event);
 
 		return response;
 	}

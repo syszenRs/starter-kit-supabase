@@ -8,8 +8,7 @@ import { APP_REDIRECT } from '$constant/app-redirect-url';
 
 export const actions: Actions = {
 	default: async (event: RequestEvent) => {
-		const result = await AuthService.EmailResetPassword(event);
-		console.log(result);
+		const result = await AuthService.sendEmailResetPassword(event);
 
 		if (result.statusCode !== SUCCESSFULL_CODE.OK)
 			return fail(result.statusCode, {
@@ -21,6 +20,7 @@ export const actions: Actions = {
 				}
 			});
 
-		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.RESET_PASSWORD_TRIGGER);
+		//TODO: Throw server message about check email
+		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.ENTRY_POINT);
 	}
 };

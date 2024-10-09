@@ -19,7 +19,7 @@ export const authBaseSchema = z.object({
 });
 
 export const signupSchema = authBaseSchema.superRefine((arg, ctx) => {
-	if (arg.password.length < 6) return;
+	if (arg.password.length < 6 || arg.password.length > 20) return;
 	if (!checkPasswordComplexity(arg.password)) {
 		ctx.addIssue({
 			code: z.ZodIssueCode.custom,
@@ -37,6 +37,48 @@ export const emailCodeSchema = z.object({
 export const emailSchema = z.object({
 	email: BASE_EMAIL_SCHEMA
 });
+
+export const resetEmailSchema = z
+	.object({
+		token: z.string().min(40, { message: 'token seems invalid' }),
+		password: z
+			.string()
+			.max(20, { message: 'Password should have at max 20 characters' })
+			.min(6, { message: 'Password should have at least 6 characters' }),
+		confirmPassword: z
+			.string()
+			.max(20, { message: 'Password should have at max 20 characters' })
+			.min(6, { message: 'Password should have at least 6 characters' })
+	})
+	.superRefine((arg, ctx) => {
+		if (arg.password.length < 6 || arg.password.length > 20 || arg.confirmPassword.length < 6 || arg.confirmPassword.length > 20) return;
+
+		let passwordComplexityError = false;
+		if (!checkPasswordComplexity(arg.password)) {
+			passwordComplexityError = true;
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Password must include at least one uppercase letter, one lowercase letter, and one special character',
+				path: ['password']
+			});
+		}
+		if (!checkPasswordComplexity(arg.confirmPassword)) {
+			passwordComplexityError = true;
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Confirm password must include at least one uppercase letter, one lowercase letter, and one special character',
+				path: ['confirmPassword']
+			});
+		}
+
+		if (!passwordComplexityError && arg.password !== arg.confirmPassword) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
+				message: 'Password must match',
+				path: ['confirmPassword']
+			});
+		}
+	});
 
 /* 	const customErrorMap = (issue, ctx) => {
 	if (issue.code === z.ZodIssueCode.invalid_type) {

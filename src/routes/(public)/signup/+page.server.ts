@@ -21,6 +21,7 @@ export const actions: Actions = {
 				}
 			});
 
+		//TODO:SET ALL COOKIES SECURE!!
 		event.cookies.set(COOKIE.CONFIRM_EMAIL, result.form.data.email, {
 			secure: false,
 			maxAge: 60 * 60 * 1, //1h

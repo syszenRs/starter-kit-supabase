@@ -1,9 +1,8 @@
 <script>
-	import { APP_REDIRECT } from '$constant/app-redirect-url.js';
-
 	let { data } = $props();
+	//TODO CHECK WTF IS HAPPENING CANT USE APP-REDIRECT-URLS HERE
 </script>
 
 <p>Hey {data.user?.email} from dashboard!</p>
 
-<a href={APP_REDIRECT.CHANGE_EMAIL} class="btn btn-link"> Change email </a>
+<a href="/" class="btn btn-link"> Change email </a>
