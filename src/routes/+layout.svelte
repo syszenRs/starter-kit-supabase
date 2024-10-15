@@ -4,7 +4,7 @@
 	import { enhance } from '$app/forms';
 	import { invalidate } from '$app/navigation';
 	import { FlashMessage } from '$lib/components/flash-message';
-	import { useListenToFormFlashMessageHook } from '$lib/utils/hooks';
+	import { useListenToFlashMessageHook } from '$lib/utils/hooks';
 	import { APP_REDIRECT } from '$constant/app-redirect-url';
 
 	let data = $props();
@@ -20,7 +20,7 @@
 		return () => data.subscription.unsubscribe();
 	});
 
-	$effect(useListenToFormFlashMessageHook(data));
+	$effect(useListenToFlashMessageHook(data));
 </script>
 
 <FlashMessage />

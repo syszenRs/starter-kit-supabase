@@ -6,6 +6,7 @@ import { REDIRECT_CODE, SUCCESSFULL_CODE } from '$constant/http-code';
 import { redirect } from '@sveltejs/kit';
 import { APP_REDIRECT } from '$constant/app-redirect-url';
 import { COOKIE } from '$constant/cookies';
+import { cookieUtils } from '$lib/utils/cookies';
 
 export const actions: Actions = {
 	default: async (event: RequestEvent) => {
@@ -21,15 +22,7 @@ export const actions: Actions = {
 				}
 			});
 
-		//TODO:SET ALL COOKIES SECURE!!
-		event.cookies.set(COOKIE.CONFIRM_EMAIL, result.form.data.email, {
-			secure: false,
-			maxAge: 60 * 60 * 1, //1h
-			priority: 'low',
-			sameSite: 'strict',
-			path: '/'
-		});
-
+		cookieUtils.setCookie(event.cookies, COOKIE.CONFIRM_EMAIL, result.form.data.email);
 		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.CONFIRM_EMAIL);
 	}
 };

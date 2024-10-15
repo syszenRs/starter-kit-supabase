@@ -3,14 +3,16 @@ import type { Actions, PageServerLoad, RequestEvent } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import { MessageType } from '$dto/flash-message';
 import { REDIRECT_CODE, SUCCESSFULL_CODE } from '$constant/http-code';
-import { cookieUtils } from '$lib/server/utils/cookies';
+import { cookieUtils } from '$lib/utils/cookies';
 import { APP_REDIRECT } from '$constant/app-redirect-url';
 import { COOKIE } from '$constant/cookies';
 
 export const load: PageServerLoad = async ({ cookies }: RequestEvent) => {
 	const userEmail = cookieUtils.getAndDestroy(cookies, COOKIE.CONFIRM_EMAIL);
 
-	if (!userEmail) throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.SIGNIN);
+	if (!userEmail) {
+		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.SIGNIN);
+	}
 
 	return {
 		email: userEmail
@@ -50,6 +52,7 @@ export const actions: Actions = {
 		}
 
 		return {
+			form: result.form,
 			flashMessage: {
 				title: 'Resend email code',
 				description: 'Check your email for the new code',

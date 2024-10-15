@@ -7,10 +7,21 @@ import { REDIRECT_CODE, SUCCESSFULL_CODE } from '$constant/http-code';
 import { AUTH_ERRORS } from '$constant/supabase-auth';
 import { APP_REDIRECT } from '$constant/app-redirect-url';
 import { COOKIE } from '$constant/cookies';
+import { cookieUtils } from '$lib/utils/cookies';
 
 export const actions: Actions = {
 	default: async (event: RequestEvent) => {
 		const result = await AuthService.signin(event);
+
+		cookieUtils.setCookie(
+			event.cookies,
+			COOKIE.SERVER_FLASH_MESSAGE,
+			JSON.stringify({
+				title: 'Signin',
+				description: 'heyyy',
+				type: MessageType.error
+			})
+		);
 
 		if (result.statusCode !== SUCCESSFULL_CODE.OK) {
 			return fail(result.statusCode, {
@@ -22,20 +33,10 @@ export const actions: Actions = {
 				}
 			});
 		} else if (result.response?.error?.code === AUTH_ERRORS.EMAIL_NOT_CONFIRMED) {
-			console.log('asda');
-			event.cookies.set(COOKIE.CONFIRM_EMAIL, result.form.data.email, {
-				secure: false,
-				maxAge: 60 * 60 * 1, //1h
-				priority: 'low',
-				sameSite: 'strict',
-				path: '/'
-			});
-			console.log('asda213');
-			//TODO: SHOULD URL BE HARDCODED ??
+			cookieUtils.setCookie(event.cookies, COOKIE.CONFIRM_EMAIL, result.form.data.email);
 			throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.CONFIRM_EMAIL);
 		}
 
-		console.log('0noo');
 		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.DASHBOARD);
 	}
 };

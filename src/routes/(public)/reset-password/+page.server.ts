@@ -19,7 +19,7 @@ export const actions: Actions = {
 		const hashToken = event.url.searchParams.get('token') as string;
 
 		const result = await AuthService.resetPassword(event, hashToken);
-		console.log('dfres', result);
+
 		if (result.statusCode !== SUCCESSFULL_CODE.OK) {
 			return fail(result.statusCode, {
 				form: result.form,

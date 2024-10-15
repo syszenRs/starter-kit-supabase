@@ -1,11 +1,9 @@
-<script>
+<script lang="ts">
 	let { data } = $props();
 	let { session, user } = $derived(data);
 </script>
 
-<p class="text-3xl font-bold text-center py-10">
-	Welcome to SvelteKit + Tailwind/DaisyUI + Supabase
-</p>
+<p class="text-3xl font-bold text-center py-10">Welcome to SvelteKit + Tailwind/DaisyUI + Supabase</p>
 
 <div class="grid grid-cols-2 gap-20">
 	<div class="bg-slate-400 p-4 break-words">

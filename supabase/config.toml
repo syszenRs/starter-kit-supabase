@@ -122,7 +122,9 @@ max_frequency = "1s"
 # pass = "env(SENDGRID_API_KEY)"
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
-
+[auth.email.template.email_change]
+subject = "Starter Kit - Change your email"
+content_path = "./supabase/templates/email_change.html"
 [auth.email.template.confirmation]
 subject = "Starter Kit - Finish your registration"
 content_path = "./supabase/templates/confirmation.html"

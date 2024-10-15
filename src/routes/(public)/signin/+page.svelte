@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { defaultValues, superForm } from 'sveltekit-superforms/client';
 	import SampleUsers from '$lib/components/sample-users.svelte';
 	import { authBaseSchema } from '$schema/auth';

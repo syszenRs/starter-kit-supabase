@@ -1,3 +1,4 @@
 export const COOKIE = {
-	CONFIRM_EMAIL: 'CF_UE' //Confirm email - user email
+	CONFIRM_EMAIL: 'FCE_UE', //Flow confirm email - user email
+	SERVER_FLASH_MESSAGE: 'S_FM' //Server flash message
 };

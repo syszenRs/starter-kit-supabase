@@ -2,7 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 import { authBaseSchema, emailCodeSchema, emailSchema } from '$schema/auth';
 import { BASE_URL } from '$env/static/private';
-import { handleTryCatchError } from '../utils/error';
+import { handleTryCatchError } from '../../utils/error';
 
 export class AuthController {
 	public static async signin(DBClient: SupabaseClient, data: z.infer<typeof authBaseSchema>) {

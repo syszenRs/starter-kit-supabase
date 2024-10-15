@@ -1,10 +1,12 @@
-import { createServerClient } from '@supabase/ssr';
 import { type Handle, type HandleServerError, redirect } from '@sveltejs/kit';
+import { createServerClient } from '@supabase/ssr';
 import { sequence } from '@sveltejs/kit/hooks';
-
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
 import { CLIENT_ERROR_CODE, REDIRECT_CODE } from '$constant/http-code';
 import { APP_REDIRECT } from '$constant/app-redirect-url';
+import { cookieUtils } from '$lib/utils/cookies';
+import { COOKIE } from '$constant/cookies';
+
 //TODO: if DB Service is down show a static page
 const supabase: Handle = async ({ event, resolve }) => {
 	/**
@@ -27,6 +29,13 @@ const supabase: Handle = async ({ event, resolve }) => {
 			}
 		}
 	});
+
+	if ('suppressGetSessionWarning' in event.locals.database.auth) {
+		// @ts-expect-error - suppressGetSessionWarning is not part of the official API
+		event.locals.database.auth.suppressGetSessionWarning = true;
+	} else {
+		console.warn('SupabaseAuthClient#suppressGetSessionWarning was removed. See https://github.com/supabase/auth-js/issues/888.');
+	}
 
 	/**
 	 * Unlike `supabase.auth.getSession()`, which returns the session _without_
@@ -53,6 +62,9 @@ const supabase: Handle = async ({ event, resolve }) => {
 		return { session, user };
 	};
 
+	const flashMessage = cookieUtils.getAndDestroy(event.cookies, COOKIE.SERVER_FLASH_MESSAGE);
+	event.locals.serverFlashMessage = flashMessage ? JSON.parse(flashMessage) : null;
+
 	return resolve(event, {
 		filterSerializedResponseHeaders(name) {
 			/**
@@ -66,7 +78,6 @@ const supabase: Handle = async ({ event, resolve }) => {
 
 const authGuard: Handle = async ({ event, resolve }) => {
 	//TODO: this only runs for server side pages (pages with server.ts file associated)
-	// so extract this logic to run this in layout aswell for server pages that don't need server
 	const { session, user } = await event.locals.safeGetSession();
 	event.locals.session = session;
 	event.locals.user = user;

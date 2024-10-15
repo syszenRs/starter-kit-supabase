@@ -1,6 +1,6 @@
 import type { userDataDto } from '$serverDto/user';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { handleTryCatchError } from '../utils/error';
+import { handleTryCatchError } from '../../utils/error';
 
 export class UserController {
 	public static async updateUser(DBClient: SupabaseClient, userData: userDataDto) {

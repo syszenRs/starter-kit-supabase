@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { emailSchema } from '$schema/auth';
 	import { defaultValues, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';

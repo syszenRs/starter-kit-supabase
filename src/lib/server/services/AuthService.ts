@@ -37,11 +37,11 @@ export class AuthService {
 			const emailNotConfirmed = res.response.error?.code === AUTH_ERRORS.EMAIL_NOT_CONFIRMED;
 
 			response.response = res.response;
-			response.statusCode = res.response.error?.status && !emailNotConfirmed ? res.response.error.status : SUCCESSFULL_CODE.OK;
-			if (res.response.error && !emailNotConfirmed)
-				response.errorMessage = this._isTooManyRequestsError(res.response.error.status, res.response.error.code)
-					? this.TOO_MANY_REQUESTS_ERROR
-					: 'Please check your credentials and try again.<br>If you continue to have trouble, consider resetting your password or contacting support.';
+			response.statusCode = SUCCESSFULL_CODE.OK;
+			if (res.response.error && !emailNotConfirmed) response.statusCode = res.response.error.status ?? SERVER_ERROR_CODE.INTERNAL_SERVER_ERROR;
+			response.errorMessage = this._isTooManyRequestsError(res.response.error?.status, res.response.error?.code)
+				? this.TOO_MANY_REQUESTS_ERROR
+				: 'Please check your credentials and try again.<br>If you continue to have trouble, consider resetting your password or contacting support.';
 		} else {
 			response.statusCode = SERVER_ERROR_CODE.INTERNAL_SERVER_ERROR;
 			response.errorMessage = this.genericError;
@@ -61,8 +61,9 @@ export class AuthService {
 
 		if (res.response) {
 			response.response = res.response;
-			response.statusCode = res.response.error?.status ? res.response.error.status : SUCCESSFULL_CODE.OK;
+			response.statusCode = SUCCESSFULL_CODE.OK;
 			if (res.response.error) {
+				response.statusCode = res.response.error.status ?? SERVER_ERROR_CODE.INTERNAL_SERVER_ERROR;
 				response.errorMessage = this._isTooManyRequestsError(res.response.error.status, res.response.error.code)
 					? this.TOO_MANY_REQUESTS_ERROR
 					: 'We were unable to complete your registration.<br>Please try a different email or reset your password if you have trouble logging in.';
@@ -91,14 +92,18 @@ export class AuthService {
 
 		const response = this._getDefaultResponse(form) as ConfirmEmailResponseDto;
 
-		if (!form.valid) return response;
+		if (!form.valid) {
+			response.errorMessage = form.errors.email ? 'It seems that we lost your email somehow..<br>Please try to sign in, so we can identify you.' : '';
+			return response;
+		}
 
 		const res = await AuthController.verifySignupEmail(event.locals.database, form.data);
 
 		if (res.response) {
 			response.response = res.response;
-			response.statusCode = res.response.error?.status ? res.response.error.status : SUCCESSFULL_CODE.OK;
+			response.statusCode = SUCCESSFULL_CODE.OK;
 			if (res.response.error) {
+				response.statusCode = res.response.error.status ?? SERVER_ERROR_CODE.INTERNAL_SERVER_ERROR;
 				response.errorMessage =
 					'We were unable to complete your registration.<br>Please check your code and try again.<br>If the issue persists try to ask for a new code.';
 			} else {
@@ -118,13 +123,17 @@ export class AuthService {
 
 		const response = this._getDefaultResponse(form) as ResetEmailResponseDto;
 
-		if (!form.valid) return response;
+		if (!form.valid) {
+			response.errorMessage = 'It seems that we lost your email somehow..<br>Please try to sign in, so we can identify you.';
+			return response;
+		}
 
 		const res = await AuthController.resendSignupConfirmCode(locals.database, form.data);
 
 		if (res.response) {
-			response.statusCode = res.response.error?.status ? res.response.error.status : SUCCESSFULL_CODE.OK;
+			response.statusCode = SUCCESSFULL_CODE.OK;
 			if (res.response.error) {
+				response.statusCode = res.response.error?.status ?? SERVER_ERROR_CODE.INTERNAL_SERVER_ERROR;
 				response.errorMessage = `We couldn't fulfill your request.<br>Try again or contact support for help.`;
 			}
 		} else {
@@ -145,8 +154,9 @@ export class AuthService {
 		const res = await AuthController.sendEmailResetPassword(locals.database, form.data);
 
 		if (res.response) {
-			response.statusCode = res.response.error?.status ? res.response.error.status : SUCCESSFULL_CODE.OK;
+			response.statusCode = SUCCESSFULL_CODE.OK;
 			if (res.response.error) {
+				response.statusCode = res.response.error.status ?? SERVER_ERROR_CODE.INTERNAL_SERVER_ERROR;
 				response.errorMessage = `We couldn't fulfill your request.<br>If the issue persists, close your browser or contact support for help.`;
 			}
 		} else {
@@ -179,8 +189,9 @@ export class AuthService {
 		const resUpdateUser = await UserController.updateUser(event.locals.database, { password: form.data.password });
 
 		if (resUpdateUser.response) {
-			response.statusCode = resUpdateUser.response.error?.status ? resUpdateUser.response.error.status : SUCCESSFULL_CODE.OK;
+			response.statusCode = SUCCESSFULL_CODE.OK;
 			if (resUpdateUser.response.error) {
+				response.statusCode = resUpdateUser.response.error.status ?? SERVER_ERROR_CODE.INTERNAL_SERVER_ERROR;
 				response.errorMessage =
 					'We were unable to reset your password.<br>Please try again, if the issue persists consider contact support for help.';
 			}
@@ -194,4 +205,6 @@ export class AuthService {
 
 		return response;
 	}
+
+	public static async changeUserEmail(event: RequestEvent) {}
 }
