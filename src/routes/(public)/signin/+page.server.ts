@@ -13,16 +13,6 @@ export const actions: Actions = {
 	default: async (event: RequestEvent) => {
 		const result = await AuthService.signin(event);
 
-		cookieUtils.setCookie(
-			event.cookies,
-			COOKIE.SERVER_FLASH_MESSAGE,
-			JSON.stringify({
-				title: 'Signin',
-				description: 'heyyy',
-				type: MessageType.error
-			})
-		);
-
 		if (result.statusCode !== SUCCESSFULL_CODE.OK) {
 			return fail(result.statusCode, {
 				form: result.form,
