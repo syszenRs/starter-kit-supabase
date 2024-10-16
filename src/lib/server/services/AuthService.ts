@@ -205,6 +205,4 @@ export class AuthService {
 
 		return response;
 	}
-
-	public static async changeUserEmail(event: RequestEvent) {}
 }
