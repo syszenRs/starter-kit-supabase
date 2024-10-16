@@ -34,7 +34,11 @@ export const actions: Actions = {
 			});
 		}
 
-		//TODO: work on a way to send flash message from server side, prob via cookie and on get request on hooks/layout? get it, delete it and pass it down to an $effect hook
+		cookieUtils.sentServerFlashMessage(event.cookies, COOKIE.SERVER_FLASH_MESSAGE, {
+			title: 'Email confirmation',
+			description: 'Email confirmed. You can now signin!',
+			type: MessageType.success
+		});
 		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.SIGNIN);
 	},
 	resendCode: async (event: RequestEvent) => {

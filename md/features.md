@@ -1,4 +1,5 @@
 [go back](../README.md)
+
 ### This startup kit have implemented the following features
 
 - Sign In
@@ -13,13 +14,13 @@
 - Reset Password
   Users request a password reset link via email, follow the link, and set a new password to regain account access.
 
-- Change Email
-  Users update their email by verifying the new email address with a confirmation code sent to the new email.
-
 - Logout
   Users terminate their session and logging them out of the app.
 
 #### This features would be great to add
+
+- Change Email
+  Users update their email by verifying the new email address with a confirmation code sent to the new email.
 
 - One-Time Password (OTP) Authentication
   -- OTP-based Sign In: Instead of password-based authentication, allow users to log in using an OTP sent to their registered email or phone number. This is particularly useful for mobile-first apps.

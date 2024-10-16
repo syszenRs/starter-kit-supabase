@@ -5,6 +5,8 @@ import { AuthService } from '$service/AuthService';
 import { redirect } from '@sveltejs/kit';
 import { REDIRECT_CODE, SUCCESSFULL_CODE } from '$constant/http-code';
 import { APP_REDIRECT } from '$constant/app-redirect-url';
+import { cookieUtils } from '$lib/utils/cookies';
+import { COOKIE } from '$constant/cookies';
 
 export const actions: Actions = {
 	default: async (event: RequestEvent) => {
@@ -20,7 +22,11 @@ export const actions: Actions = {
 				}
 			});
 
-		//TODO: Throw server message about check email
+		cookieUtils.sentServerFlashMessage(event.cookies, COOKIE.SERVER_FLASH_MESSAGE, {
+			title: 'Reset password',
+			description: 'Your email is not verified yet. Please check your inbox for the verification email to complete the process.',
+			type: MessageType.success
+		});
 		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.ENTRY_POINT);
 	}
 };

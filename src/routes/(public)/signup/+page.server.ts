@@ -22,6 +22,11 @@ export const actions: Actions = {
 				}
 			});
 
+		cookieUtils.sentServerFlashMessage(event.cookies, COOKIE.SERVER_FLASH_MESSAGE, {
+			title: 'Signup',
+			description: 'Check your email for the code to complete your registration.',
+			type: MessageType.success
+		});
 		cookieUtils.setCookie(event.cookies, COOKIE.CONFIRM_EMAIL, result.form.data.email);
 		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.CONFIRM_EMAIL);
 	}

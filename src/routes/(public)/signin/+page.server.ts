@@ -23,6 +23,11 @@ export const actions: Actions = {
 				}
 			});
 		} else if (result.response?.error?.code === AUTH_ERRORS.EMAIL_NOT_CONFIRMED) {
+			cookieUtils.sentServerFlashMessage(event.cookies, COOKIE.SERVER_FLASH_MESSAGE, {
+				title: 'Signin',
+				description: 'Your email is not verified yet. Please check your inbox for the verification email to complete the process.',
+				type: MessageType.success
+			});
 			cookieUtils.setCookie(event.cookies, COOKIE.CONFIRM_EMAIL, result.form.data.email);
 			throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.CONFIRM_EMAIL);
 		}

@@ -1,3 +1,4 @@
+import type { FlashMessagePropsDto } from '$dto/flash-message';
 import type { Cookies } from '@sveltejs/kit';
 
 export const cookieUtils = {
@@ -17,5 +18,8 @@ export const cookieUtils = {
 			sameSite: 'strict',
 			path: '/'
 		});
+	},
+	sentServerFlashMessage(cookies: Cookies, identifier: string, flashMessage: FlashMessagePropsDto) {
+		this.setCookie(cookies, identifier, JSON.stringify(flashMessage));
 	}
 };

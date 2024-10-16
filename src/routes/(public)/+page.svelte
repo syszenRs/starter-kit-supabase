@@ -8,10 +8,10 @@
 <div class="grid grid-cols-2 gap-20">
 	<div class="bg-slate-400 p-4 break-words">
 		<p>Session:</p>
-		<code>{JSON.stringify(session)}</code>
+		<pre class="text-wrap">{JSON.stringify(session, null, 2)}</pre>
 	</div>
 	<div class="bg-slate-500 p-4 break-words">
 		<p>User:</p>
-		<code>{JSON.stringify(user)}</code>
+		<pre class="text-wrap">{JSON.stringify(user, null, 2)}</pre>
 	</div>
 </div>
