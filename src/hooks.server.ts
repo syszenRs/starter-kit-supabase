@@ -9,6 +9,9 @@ import { COOKIE } from '$constant/cookies';
 
 //TODO: if DB Service is down show a static page
 const supabase: Handle = async ({ event, resolve }) => {
+	const flashMessage = cookieUtils.getAndDestroy(event.cookies, COOKIE.SERVER_FLASH_MESSAGE);
+	event.locals.serverFlashMessage = flashMessage ? JSON.parse(flashMessage) : null;
+
 	/**
 	 * Creates a Supabase client specific to this server request.
 	 *
@@ -61,9 +64,6 @@ const supabase: Handle = async ({ event, resolve }) => {
 
 		return { session, user };
 	};
-
-	const flashMessage = cookieUtils.getAndDestroy(event.cookies, COOKIE.SERVER_FLASH_MESSAGE);
-	event.locals.serverFlashMessage = flashMessage ? JSON.parse(flashMessage) : null;
 
 	return resolve(event, {
 		filterSerializedResponseHeaders(name) {

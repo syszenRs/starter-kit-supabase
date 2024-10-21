@@ -42,10 +42,11 @@ Extensions used (they are just sugestion):
 
 - Make sure Docker is running
   go to docker settings/general and check option `Expose daemon on tcp://localhost:2375 without TLS`
-- run `npx supabase init`
-- set the .env file with
-  - PUBLIC_SUPABASE_URL = `API URL` given in the previous step
-  - PUBLIC_SUPABASE_ANON_KEY = `anon key` given in the previous step
+- run `npx supabase init` (IGNORE THIS STEP IF the project already contains a "supabase" folder)
+- In the .env file set
   - SUPABASE_ACCESS_TOKEN = this token should be given by someone with supabase account access
 - run `npx supabase link --project-ref PROJECTREF` > should be given by someone with supabase account access
 - run `npx supabase start` and this will install the docker images and start the database
+- In the .env file set
+  - PUBLIC_SUPABASE_URL = `API URL` given in the previous step
+  - PUBLIC_SUPABASE_ANON_KEY = `anon key` given in the previous step
