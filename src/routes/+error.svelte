@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { APP_REDIRECT } from '$constant/app-redirect-url';
+	import { APP_REDIRECT } from '$constant/routes-url';
 </script>
 
 <div class="p-4 flex justify-center">
@@ -10,9 +10,9 @@
 		<p class="mt-5">{@html $page.error?.message}</p>
 		<div class="mt-6">
 			{#if $page.data.user}
-				<a href={APP_REDIRECT.DASHBOARD} class="btn btn-primary">Return to dashboard</a>
+				<a href={APP_REDIRECT.DASHBOARD}>Return to dashboard</a>
 			{:else}
-				<a href={APP_REDIRECT.ENTRY_POINT} class="btn btn-primary">Return to home</a>
+				<a href={APP_REDIRECT.ENTRY_POINT}>Return to home</a>
 			{/if}
 		</div>
 	</div>

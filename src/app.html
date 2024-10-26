@@ -10,20 +10,14 @@
 
 		<!-- SEO Meta Tags -->
 		<title>Start kit</title>
-		<meta
-			name="description"
-			content="A brief description of the page content (up to 155 characters) for better search engine indexing."
-		/>
+		<meta name="description" content="A brief description of the page content (up to 155 characters) for better search engine indexing." />
 		<meta name="keywords" content="keyword1, keyword2, keyword3, related to page content" />
 		<!-- Allows search engines to index the page -->
 		<meta name="robots" content="index, follow" />
 
 		<!-- Open Graph for Social Media -->
 		<meta property="og:title" content="XYZ" />
-		<meta
-			property="og:description"
-			content="A brief description for social media sharing (up to 200 characters)."
-		/>
+		<meta property="og:description" content="A brief description for social media sharing (up to 200 characters)." />
 		<meta property="og:image" content="https://www.example.com/images/og-image.jpg" />
 		<!-- URL to the social media preview image -->
 		<meta property="og:url" content="https://www.example.com/current-page-url" />
@@ -67,10 +61,7 @@
 		%sveltekit.head%
 	</head>
 
-	<body
-		data-sveltekit-preload-data="hover"
-		class="mx-1 md:mx-10 min-h-dvh flex flex-col overflow-y-visible bg-[#dadcdc]"
-	>
+	<body data-sveltekit-preload-data="hover" class="min-h-dvh flex flex-col overflow-y-visible bg-[#dadcdc]">
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>

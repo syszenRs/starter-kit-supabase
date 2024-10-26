@@ -2,7 +2,7 @@ import { redirect, error } from '@sveltejs/kit';
 import type { Actions, RequestEvent } from './$types';
 import { AuthService } from '$service/AuthService';
 import { REDIRECT_CODE, SERVER_ERROR_CODE, SUCCESSFULL_CODE } from '$constant/http-code';
-import { APP_REDIRECT } from '$constant/app-redirect-url';
+import { APP_REDIRECT } from '$constant/routes-url';
 
 export const actions: Actions = {
 	default: async (event: RequestEvent) => {

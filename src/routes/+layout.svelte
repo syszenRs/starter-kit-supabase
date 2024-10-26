@@ -3,9 +3,10 @@
 	import { onMount } from 'svelte';
 	import { enhance } from '$app/forms';
 	import { invalidate } from '$app/navigation';
-	import { FlashMessage } from '$lib/components/flash-message';
+	import { FlashMessage } from '$components/flash-message';
 	import { useListenToFlashMessageHook } from '$lib/utils/hooks';
-	import { APP_REDIRECT } from '$constant/app-redirect-url';
+	import { APP_REDIRECT } from '$constant/routes-url';
+	import Button from '$components/temp/button.svelte';
 
 	let data = $props();
 	let { session, database } = $derived<App.Locals>(data.data);
@@ -23,19 +24,25 @@
 	$effect(useListenToFlashMessageHook(data));
 </script>
 
+{#snippet clickable(url: string, text: string)}
+	<a href={url} class="bg-orange-200 font-semibold text-sm px-2 py-1 rounded-md">{text}</a>
+{/snippet}
+
 <FlashMessage />
 
-<div class="flex justify-center py-6">
-	<a href={APP_REDIRECT.ENTRY_POINT} class="btn btn-link">Home</a>
+<div class="flex justify-center py-6 gap-4 bg-gray-300 px-1 md:px-10">
+	{@render clickable(APP_REDIRECT.ENTRY_POINT, 'Home')}
 	{#if session}
 		<form method="POST" use:enhance action="/signout">
-			<button type="submit" class="btn btn-link">logout</button>
+			<Button type="submit">logout</Button>
 		</form>
 	{:else}
-		<a href={APP_REDIRECT.SIGNUP} class="btn btn-link">Sign up</a>
-		<a href={APP_REDIRECT.SIGNIN} class="btn btn-link">Sign in</a>
+		{@render clickable(APP_REDIRECT.SIGNUP, 'Sign up')}
+		{@render clickable(APP_REDIRECT.SIGNIN, 'Sign in')}
 	{/if}
-	<a href={APP_REDIRECT.DASHBOARD} class="btn btn-link">Dashboard</a>
+	{@render clickable(APP_REDIRECT.DASHBOARD, 'Dashboard')}
 </div>
 
-{@render data.children()}
+<div class="mx-1 md:mx-10 mt-6">
+	{@render data.children()}
+</div>

@@ -11,4 +11,4 @@ To start just clone this and [Configure your environment](md/env-configuration.m
 -- Svelte[Kit]
 -- Supabase (with local development env)
 -- Superforms + zod
--- tailwindCSS + daisyUI
+-- tailwindCSS

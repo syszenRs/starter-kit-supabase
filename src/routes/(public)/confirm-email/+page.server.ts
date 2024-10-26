@@ -4,7 +4,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { MessageType } from '$dto/flash-message';
 import { REDIRECT_CODE, SUCCESSFULL_CODE } from '$constant/http-code';
 import { cookieUtils } from '$lib/utils/cookies';
-import { APP_REDIRECT } from '$constant/app-redirect-url';
+import { APP_REDIRECT } from '$constant/routes-url';
 import { COOKIE } from '$constant/cookies';
 
 export const load: PageServerLoad = async ({ cookies }: RequestEvent) => {

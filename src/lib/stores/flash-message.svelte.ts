@@ -1,6 +1,6 @@
 import { toast } from 'svelte-sonner';
 import { MessageType, type DefaultOptsDto, type FlashPromiseOptsDto } from '$dto/flash-message';
-import { FlashMessageCustomRender } from '$lib/components/flash-message';
+import { FlashMessageCustomRender } from '$components/flash-message';
 
 type FlashMessageDto = {
 	type: MessageType;

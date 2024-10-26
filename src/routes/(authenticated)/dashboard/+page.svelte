@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { APP_REDIRECT } from '$constant/app-redirect-url.js';
+	import { APP_REDIRECT } from '$constant/routes-url.js';
 
 	let { data } = $props();
 </script>
 
-<p>Hey {data.user?.email} from dashboard!</p>
+<p class="text-center pt-10 text-xl">Hey <b>{data.user?.email}</b>, you reached the dashboard!</p>

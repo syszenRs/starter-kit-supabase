@@ -3,6 +3,8 @@
 	import { defaultValues, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { emailCodeSchema } from '$schema/auth';
+	import Button from '$components/temp/button.svelte';
+	import InputError from '$components/temp/input-error.svelte';
 
 	let { data } = $props();
 
@@ -29,15 +31,12 @@
 </div>
 
 <form method="POST" action="?/confirmCode" use:enhance class="flex flex-col max-w-screen-sm gap-2">
-	<label class="form-control w-full">
-		<div class="label">
-			<span class="label-text">Code</span>
-		</div>
-		<input type="number" name="code" bind:value={$form.code} placeholder="Type here" class="input input-bordered w-full input-md" />
-		{#if $errors.code}<span class="label-text-alt text-red-500">{$errors.code}</span>{/if}
-	</label>
-	<button class="btn btn-primary btn-sm mt-8">Confirm</button>
+	<label for="code">Code</label>
+	<input type="number" id="code" name="code" bind:value={$form.code} placeholder="Type here" />
+	<InputError>{$errors.code}</InputError>
+
+	<Button>Confirm</Button>
 </form>
 <form method="POST" action="?/resendCode" use:resendEnhance>
-	<button type="submit" class="btn btn-link btn-sm mt-8">Resend code</button>
+	<Button type="submit">Resend code</Button>
 </form>

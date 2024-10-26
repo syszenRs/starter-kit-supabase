@@ -3,7 +3,7 @@ import { createServerClient } from '@supabase/ssr';
 import { sequence } from '@sveltejs/kit/hooks';
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
 import { CLIENT_ERROR_CODE, REDIRECT_CODE } from '$constant/http-code';
-import { APP_REDIRECT } from '$constant/app-redirect-url';
+import { APP_REDIRECT } from '$constant/routes-url';
 import { cookieUtils } from '$lib/utils/cookies';
 import { COOKIE } from '$constant/cookies';
 
