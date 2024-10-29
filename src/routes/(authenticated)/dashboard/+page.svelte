@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { APP_REDIRECT } from '$constant/routes-url.js';
-
 	let { data } = $props();
 </script>
 
