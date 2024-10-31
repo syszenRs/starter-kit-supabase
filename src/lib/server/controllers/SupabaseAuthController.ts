@@ -1,10 +1,15 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
-import { authBaseSchema, emailCodeSchema, emailSchema } from '$schema/auth';
+import { authBaseSchema, emailCodeSchema, emailSchema } from '$schemaValidate/auth';
 import { BASE_URL } from '$env/static/private';
-import { handleTryCatchError } from '../../utils/error';
+import { handleTryCatchError } from '$lib/utils/error';
 
-export class AuthController {
+type userDataDto = {
+	email?: string;
+	password?: string;
+};
+
+export class SupabaseAuthController {
 	public static async signin(DBClient: SupabaseClient, data: z.infer<typeof authBaseSchema>) {
 		try {
 			const response = await DBClient.auth.signInWithPassword({
@@ -116,6 +121,28 @@ export class AuthController {
 				token_hash: token,
 				type: 'recovery'
 			});
+
+			return {
+				response,
+				error: null
+			};
+		} catch (error) {
+			return {
+				response: null,
+				error: handleTryCatchError(error)
+			};
+		}
+	}
+
+	public static async updateUser(DBClient: SupabaseClient, userData: userDataDto) {
+		if (!userData.email && !userData.password)
+			return {
+				response: null,
+				error: 'No email or password provided'
+			};
+
+		try {
+			const response = await DBClient.auth.updateUser(userData);
 
 			return {
 				response,

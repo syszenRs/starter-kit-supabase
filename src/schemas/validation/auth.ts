@@ -80,6 +80,14 @@ export const resetEmailSchema = z
 		}
 	});
 
+export type authBaseSchemaDto = z.infer<typeof authBaseSchema>;
+
+export type emailCodeSchemaDto = z.infer<typeof emailCodeSchema>;
+
+export type emailSchemaDto = z.infer<typeof emailSchema>;
+
+export type resetEmailSchemaDto = z.infer<typeof resetEmailSchema>;
+
 /* 	const customErrorMap = (issue, ctx) => {
 	if (issue.code === z.ZodIssueCode.invalid_type) {
 		return { message: 'is a required field' };

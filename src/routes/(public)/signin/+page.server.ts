@@ -11,14 +11,14 @@ import { cookieUtils } from '$lib/utils/cookies';
 
 export const actions: Actions = {
 	default: async (event: RequestEvent) => {
-		const result = await AuthService.signin(event);
+		const { statusCode, result, error } = await AuthService.signin(event);
 
-		if (result.statusCode !== SUCCESSFULL_CODE.OK) {
-			return fail(result.statusCode, {
+		if (statusCode !== SUCCESSFULL_CODE.OK) {
+			return fail(statusCode, {
 				form: result.form,
 				flashMessage: {
 					title: 'Signin',
-					description: result.errorMessage,
+					description: error?.errorMessage,
 					type: MessageType.error
 				}
 			});

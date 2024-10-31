@@ -18,7 +18,8 @@ const config = {
 			$components: 'src/lib/components',
 			$constant: 'src/lib/constants',
 			$store: 'src/lib/stores',
-			$schema: 'src/lib/schemas',
+			$schemaDB: 'src/schemas/database',
+			$schemaValidate: 'src/schemas/validation',
 			$dto: 'src/lib/dto',
 			$serverDto: 'src/lib/server/dto'
 		}

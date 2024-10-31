@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { defaultValues, superForm } from 'sveltekit-superforms/client';
 	import SampleUsers from '$components/temp/sample-users.svelte';
-	import { authBaseSchema } from '$schema/auth';
+	import { authBaseSchema } from '$schemaValidate/auth';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { APP_REDIRECT } from '$constant/routes-url';
 	import Button from '$components/temp/button.svelte';

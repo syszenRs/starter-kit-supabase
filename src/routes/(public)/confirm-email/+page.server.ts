@@ -21,14 +21,14 @@ export const load: PageServerLoad = async ({ cookies }: RequestEvent) => {
 
 export const actions: Actions = {
 	confirmCode: async (event: RequestEvent) => {
-		const result = await AuthService.confirmEmail(event);
+		const { statusCode, result, error } = await AuthService.confirmEmail(event);
 
-		if (result.statusCode !== SUCCESSFULL_CODE.OK) {
-			return fail(result.statusCode, {
+		if (statusCode !== SUCCESSFULL_CODE.OK) {
+			return fail(statusCode, {
 				form: result.form,
 				flashMessage: {
 					title: 'Email confirmation',
-					description: result.errorMessage,
+					description: error?.errorMessage,
 					type: MessageType.error
 				}
 			});
@@ -42,14 +42,14 @@ export const actions: Actions = {
 		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.SIGNIN);
 	},
 	resendCode: async (event: RequestEvent) => {
-		const result = await AuthService.resendSignupConfirmCode(event);
+		const { statusCode, result, error } = await AuthService.resendSignupConfirmCode(event);
 
-		if (result.statusCode !== SUCCESSFULL_CODE.OK) {
-			return fail(result.statusCode, {
+		if (statusCode !== SUCCESSFULL_CODE.OK) {
+			return fail(statusCode, {
 				form: result.form,
 				flashMessage: {
 					title: 'Resend email code',
-					description: result.errorMessage,
+					description: error?.errorMessage,
 					type: MessageType.error
 				}
 			});

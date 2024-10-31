@@ -1,15 +1,13 @@
-import { z } from 'zod';
-import { authBaseSchema, emailCodeSchema, emailSchema, resetEmailSchema } from '$schema/auth';
-import type { AuthSPResponseDto, BaseResponseDto } from './base';
+import type { AuthError, Session, User } from '@supabase/supabase-js';
+import { type SuperValidated } from 'sveltekit-superforms';
 
-export type AuthResponseDto = BaseResponseDto<z.infer<typeof authBaseSchema>> & {
-	response?: AuthSPResponseDto;
+export type AuthWithResponseDto<FormType extends Record<string, unknown>> = {
+	form: SuperValidated<FormType>;
+	response?: {
+		data: {
+			user: User | null;
+			session: Session | null;
+		};
+		error: AuthError | null;
+	};
 };
-
-export type ConfirmEmailResponseDto = BaseResponseDto<z.infer<typeof emailCodeSchema>> & {
-	response?: AuthSPResponseDto;
-};
-
-export type ResetEmailResponseDto = BaseResponseDto<z.infer<typeof emailSchema>>;
-
-export type resetPassword = BaseResponseDto<z.infer<typeof resetEmailSchema>>;

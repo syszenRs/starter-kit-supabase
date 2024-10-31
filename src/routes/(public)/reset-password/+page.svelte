@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { defaultValues, superForm } from 'sveltekit-superforms';
-	import { resetEmailSchema } from '$schema/auth';
+	import { resetEmailSchema } from '$schemaValidate/auth';
 	import { zod } from 'sveltekit-superforms/adapters';
 	import { page } from '$app/stores';
 	import Button from '$components/temp/button.svelte';

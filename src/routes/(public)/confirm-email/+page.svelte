@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { defaultValues, superForm } from 'sveltekit-superforms';
 	import { zod } from 'sveltekit-superforms/adapters';
-	import { emailCodeSchema } from '$schema/auth';
+	import { emailCodeSchema } from '$schemaValidate/auth';
 	import Button from '$components/temp/button.svelte';
 	import InputError from '$components/temp/input-error.svelte';
 

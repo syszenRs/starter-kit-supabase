@@ -9,7 +9,10 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"db:push": "drizzle-kit push",
+		"db:migrate": "drizzle-kit migrate",
+		"db:studio": "drizzle-kit studio"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.3.1",
@@ -17,6 +20,7 @@
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"@types/eslint": "^9.6.1",
 		"autoprefixer": "^10.4.20",
+		"drizzle-kit": "^0.26.2",
 		"eslint": "^9.13.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.46.0",
@@ -29,14 +33,18 @@
 		"svelte-sonner": "^0.3.28",
 		"sveltekit-superforms": "^2.20.0",
 		"tailwindcss": "^3.4.14",
+		"tsx": "^4.19.2",
 		"typescript": "^5.6.3",
-		"typescript-eslint": "^8.12.1",
+		"typescript-eslint": "^8.12.2",
 		"vite": "^5.4.10",
 		"zod": "^3.23.8"
 	},
 	"type": "module",
 	"dependencies": {
 		"@supabase/ssr": "^0.5.1",
-		"@supabase/supabase-js": "^2.46.0"
+		"@supabase/supabase-js": "^2.46.0",
+		"dotenv": "^16.4.5",
+		"drizzle-orm": "^0.35.3",
+		"postgres": "^3.4.5"
 	}
 }

@@ -6,6 +6,7 @@ import { CLIENT_ERROR_CODE, REDIRECT_CODE } from '$constant/http-code';
 import { APP_REDIRECT } from '$constant/routes-url';
 import { cookieUtils } from '$lib/utils/cookies';
 import { COOKIE } from '$constant/cookies';
+import { dev } from '$app/environment';
 
 //TODO: if DB Service is down show a static page
 const supabase: Handle = async ({ event, resolve }) => {
@@ -95,17 +96,29 @@ const authGuard: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-export const handleError: HandleServerError = async ({ status, message }) => {
+export const handleError: HandleServerError = async ({ error, status, message }) => {
 	//TODO: Add custom error loggin here if needed like sentry or others
 
+	let outputMessage = '';
+
 	if (status === CLIENT_ERROR_CODE.NOT_FOUND) {
-		message = `Its seems that you know more than us trying to acessing something that doesn't exists`;
+		outputMessage = `Its seems that you know more than us trying to acessing something that doesn't exists`;
 	} else {
-		message = 'Its seems that something bad happen here...';
+		outputMessage = 'Its seems that something bad happen here...';
+	}
+
+	if (dev) {
+		outputMessage +=
+			'<br><br><div style="background-grey; border: 2px solid red; padding: 10px"><b>DEV ERROR DEBUG</b><br>' +
+			message +
+			'' +
+			'<br>' +
+			error +
+			'</div>';
 	}
 
 	return {
-		message: message
+		message: outputMessage
 	};
 };
 

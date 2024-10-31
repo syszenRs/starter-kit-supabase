@@ -6,11 +6,11 @@ import { APP_REDIRECT } from '$constant/routes-url';
 
 export const actions: Actions = {
 	default: async (event: RequestEvent) => {
-		const result = await AuthService.signout(event);
+		const { statusCode, error: outputError } = await AuthService.signout(event);
 
-		if (result.statusCode !== SUCCESSFULL_CODE.OK) {
+		if (statusCode !== SUCCESSFULL_CODE.OK) {
 			error(SERVER_ERROR_CODE.INTERNAL_SERVER_ERROR, {
-				message: result.error
+				message: outputError!.errorMessage
 			});
 		}
 
