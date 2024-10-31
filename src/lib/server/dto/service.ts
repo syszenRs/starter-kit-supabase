@@ -2,13 +2,15 @@ type ServiceErrorDto = {
 	errorMessage: string;
 };
 
-export type ServiceResponseDto<ResultType> = {
+export type ServiceOutputResultStructDto<ResultType> = {
 	statusCode: number;
 	result: ResultType;
 	error?: ServiceErrorDto;
 };
 
-export type ServiceSimpleResponseDto = {
+export type ServiceOutputResultDto<ResultType> = Promise<ServiceOutputResultStructDto<ResultType>>;
+
+export type ServiceOutputDto = {
 	statusCode: number;
 	error?: ServiceErrorDto;
 };

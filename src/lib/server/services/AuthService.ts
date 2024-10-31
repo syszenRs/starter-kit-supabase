@@ -1,20 +1,11 @@
 import type { RequestEvent } from '@sveltejs/kit';
-import type { AuthWithResponseDto } from '$lib/server/dto/auth';
-import type { ServiceResponseDto, ServiceSimpleResponseDto } from '$serverDto/service';
+import type { AuthWithResponseDto } from '$serverDto/auth';
+import type { ServiceOutputResultDto, ServiceOutputDto, ServiceOutputResultStructDto } from '$serverDto/service';
 import type { SuperformFormType } from '$serverDto/generic';
+import type { authBaseSchemaDto, emailCodeSchemaDto, emailSchemaDto, resetEmailSchemaDto } from '$schemaValidate/auth';
 import { superValidate, type SuperValidated } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import {
-	authBaseSchema,
-	emailCodeSchema,
-	emailSchema,
-	resetEmailSchema,
-	signupSchema,
-	type authBaseSchemaDto,
-	type emailCodeSchemaDto,
-	type emailSchemaDto,
-	type resetEmailSchemaDto
-} from '$schemaValidate/auth';
+import { authBaseSchema, emailCodeSchema, emailSchema, resetEmailSchema, signupSchema } from '$schemaValidate/auth';
 import { SupabaseAuthController } from '$controller/SupabaseAuthController';
 import { CLIENT_ERROR_CODE, SERVER_ERROR_CODE, SUCCESSFULL_CODE } from '$constant/http-code';
 import { AUTH_ERRORS } from '$constant/supabase-auth';
@@ -27,10 +18,9 @@ export class AuthService {
 		return CLIENT_ERROR_CODE.TOO_MANY_REQUESTS === status || code === AUTH_ERRORS.RATE_LIMIT_EXCEEDED;
 	}
 
-	//TODO: CONTINUE
 	private static _getDefaultResponseV2<FormType extends SuperformFormType>(
 		form: SuperValidated<FormType>
-	): ServiceResponseDto<AuthWithResponseDto<FormType>> {
+	): ServiceOutputResultStructDto<AuthWithResponseDto<FormType>> {
 		return {
 			statusCode: CLIENT_ERROR_CODE.BAD_REQUEST,
 			result: {
@@ -41,7 +31,7 @@ export class AuthService {
 		};
 	}
 
-	public static async signin({ request, locals }: RequestEvent): Promise<ServiceResponseDto<AuthWithResponseDto<authBaseSchemaDto>>> {
+	public static async signin({ request, locals }: RequestEvent): ServiceOutputResultDto<AuthWithResponseDto<authBaseSchemaDto>> {
 		const form = await superValidate(request, zod(authBaseSchema));
 
 		const output = this._getDefaultResponseV2<authBaseSchemaDto>(form);
@@ -69,7 +59,7 @@ export class AuthService {
 		return output;
 	}
 
-	public static async signup({ request, locals }: RequestEvent): Promise<ServiceResponseDto<AuthWithResponseDto<authBaseSchemaDto>>> {
+	public static async signup({ request, locals }: RequestEvent): ServiceOutputResultDto<AuthWithResponseDto<authBaseSchemaDto>> {
 		const form = await superValidate(request, zod(signupSchema));
 
 		const output = this._getDefaultResponseV2<authBaseSchemaDto>(form);
@@ -97,7 +87,7 @@ export class AuthService {
 		return output;
 	}
 
-	public static async signout({ locals }: RequestEvent): Promise<ServiceSimpleResponseDto> {
+	public static async signout({ locals }: RequestEvent): Promise<ServiceOutputDto> {
 		const res = await SupabaseAuthController.signout(locals.database);
 
 		const hasError = res.error || res.response?.error;
@@ -110,7 +100,7 @@ export class AuthService {
 		};
 	}
 
-	public static async confirmEmail(event: RequestEvent): Promise<ServiceResponseDto<AuthWithResponseDto<emailCodeSchemaDto>>> {
+	public static async confirmEmail(event: RequestEvent): ServiceOutputResultDto<AuthWithResponseDto<emailCodeSchemaDto>> {
 		const form = await superValidate(event.request, zod(emailCodeSchema));
 
 		const output = this._getDefaultResponseV2<emailCodeSchemaDto>(form);
@@ -147,7 +137,7 @@ export class AuthService {
 		return output;
 	}
 
-	public static async resendSignupConfirmCode({ request, locals }: RequestEvent): Promise<ServiceResponseDto<AuthWithResponseDto<emailSchemaDto>>> {
+	public static async resendSignupConfirmCode({ request, locals }: RequestEvent): ServiceOutputResultDto<AuthWithResponseDto<emailSchemaDto>> {
 		const form = await superValidate(request, zod(emailSchema));
 
 		const output = this._getDefaultResponseV2<emailSchemaDto>(form);
@@ -177,7 +167,7 @@ export class AuthService {
 		return output;
 	}
 
-	public static async sendEmailResetPassword({ request, locals }: RequestEvent): Promise<ServiceResponseDto<AuthWithResponseDto<emailSchemaDto>>> {
+	public static async sendEmailResetPassword({ request, locals }: RequestEvent): ServiceOutputResultDto<AuthWithResponseDto<emailSchemaDto>> {
 		const form = await superValidate(request, zod(emailSchema));
 
 		const output = this._getDefaultResponseV2<emailSchemaDto>(form);
@@ -202,10 +192,7 @@ export class AuthService {
 		return output;
 	}
 
-	public static async resetPassword(
-		event: RequestEvent,
-		tokenUrlParam: string
-	): Promise<ServiceResponseDto<AuthWithResponseDto<resetEmailSchemaDto>>> {
+	public static async resetPassword(event: RequestEvent, tokenUrlParam: string): ServiceOutputResultDto<AuthWithResponseDto<resetEmailSchemaDto>> {
 		const form = await superValidate(event.request, zod(resetEmailSchema));
 
 		const output = this._getDefaultResponseV2<resetEmailSchemaDto>(form);
