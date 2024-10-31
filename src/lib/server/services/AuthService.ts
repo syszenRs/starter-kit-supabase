@@ -1,14 +1,17 @@
 import type { RequestEvent } from '@sveltejs/kit';
 import type { AuthWithResponseDto } from '$serverDto/auth';
-import type { ServiceOutputResultDto, ServiceOutputDto, ServiceOutputResultStructDto } from '$serverDto/service';
-import type { SuperformFormType } from '$serverDto/generic';
+import type { ServiceOutputResultDto, ServiceOutputDto } from '$serverDto/service';
 import type { authBaseSchemaDto, emailCodeSchemaDto, emailSchemaDto, resetEmailSchemaDto } from '$schemaValidate/auth';
-import { superValidate, type SuperValidated } from 'sveltekit-superforms';
+import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { authBaseSchema, emailCodeSchema, emailSchema, resetEmailSchema, signupSchema } from '$schemaValidate/auth';
 import { SupabaseAuthController } from '$controller/SupabaseAuthController';
 import { CLIENT_ERROR_CODE, SERVER_ERROR_CODE, SUCCESSFULL_CODE } from '$constant/http-code';
 import { AUTH_ERRORS } from '$constant/supabase-auth';
+import { getDefaultServiceOutput, getDefaultServiceResultOutput } from '../utils';
+import type { SuperformFormType } from '$serverDto/generic';
+
+type AuthServiceOutputType<FormType extends SuperformFormType> = ServiceOutputResultDto<AuthWithResponseDto<FormType>>;
 
 export class AuthService {
 	private static genericError = 'Something bad happen in our side.<br>Please consider contacting support to report.';
@@ -18,23 +21,10 @@ export class AuthService {
 		return CLIENT_ERROR_CODE.TOO_MANY_REQUESTS === status || code === AUTH_ERRORS.RATE_LIMIT_EXCEEDED;
 	}
 
-	private static _getDefaultResponseV2<FormType extends SuperformFormType>(
-		form: SuperValidated<FormType>
-	): ServiceOutputResultStructDto<AuthWithResponseDto<FormType>> {
-		return {
-			statusCode: CLIENT_ERROR_CODE.BAD_REQUEST,
-			result: {
-				form,
-				response: undefined
-			},
-			error: undefined
-		};
-	}
-
-	public static async signin({ request, locals }: RequestEvent): ServiceOutputResultDto<AuthWithResponseDto<authBaseSchemaDto>> {
+	public static async signin({ request, locals }: RequestEvent): AuthServiceOutputType<authBaseSchemaDto> {
 		const form = await superValidate(request, zod(authBaseSchema));
 
-		const output = this._getDefaultResponseV2<authBaseSchemaDto>(form);
+		const output = getDefaultServiceResultOutput<authBaseSchemaDto, AuthWithResponseDto<authBaseSchemaDto>>(form);
 
 		if (!form.valid) return output;
 
@@ -59,10 +49,10 @@ export class AuthService {
 		return output;
 	}
 
-	public static async signup({ request, locals }: RequestEvent): ServiceOutputResultDto<AuthWithResponseDto<authBaseSchemaDto>> {
+	public static async signup({ request, locals }: RequestEvent): AuthServiceOutputType<authBaseSchemaDto> {
 		const form = await superValidate(request, zod(signupSchema));
 
-		const output = this._getDefaultResponseV2<authBaseSchemaDto>(form);
+		const output = getDefaultServiceResultOutput<authBaseSchemaDto, AuthWithResponseDto<authBaseSchemaDto>>(form);
 
 		if (!form.valid) return output;
 
@@ -87,23 +77,25 @@ export class AuthService {
 		return output;
 	}
 
-	public static async signout({ locals }: RequestEvent): Promise<ServiceOutputDto> {
+	public static async signout({ locals }: RequestEvent): ServiceOutputDto {
 		const res = await SupabaseAuthController.signout(locals.database);
+
+		const output = getDefaultServiceOutput();
 
 		const hasError = res.error || res.response?.error;
 
-		return {
-			statusCode: hasError ? CLIENT_ERROR_CODE.BAD_REQUEST : SUCCESSFULL_CODE.OK,
-			error: {
-				errorMessage: hasError ? 'Logout failed. Please try again.<br>If the issue persists, close your browser or contact support for help.' : ''
-			}
+		output.statusCode = hasError ? CLIENT_ERROR_CODE.BAD_REQUEST : SUCCESSFULL_CODE.OK;
+		output.error = {
+			errorMessage: hasError ? 'Logout failed. Please try again.<br>If the issue persists, close your browser or contact support for help.' : ''
 		};
+
+		return output;
 	}
 
-	public static async confirmEmail(event: RequestEvent): ServiceOutputResultDto<AuthWithResponseDto<emailCodeSchemaDto>> {
+	public static async confirmEmail(event: RequestEvent): AuthServiceOutputType<emailCodeSchemaDto> {
 		const form = await superValidate(event.request, zod(emailCodeSchema));
 
-		const output = this._getDefaultResponseV2<emailCodeSchemaDto>(form);
+		const output = getDefaultServiceResultOutput<emailCodeSchemaDto, AuthWithResponseDto<emailCodeSchemaDto>>(form);
 
 		if (!form.valid) {
 			output.error = {
@@ -137,10 +129,10 @@ export class AuthService {
 		return output;
 	}
 
-	public static async resendSignupConfirmCode({ request, locals }: RequestEvent): ServiceOutputResultDto<AuthWithResponseDto<emailSchemaDto>> {
+	public static async resendSignupConfirmCode({ request, locals }: RequestEvent): AuthServiceOutputType<emailSchemaDto> {
 		const form = await superValidate(request, zod(emailSchema));
 
-		const output = this._getDefaultResponseV2<emailSchemaDto>(form);
+		const output = getDefaultServiceResultOutput<emailSchemaDto, AuthWithResponseDto<emailSchemaDto>>(form);
 
 		if (!form.valid) {
 			output.error = {
@@ -167,10 +159,10 @@ export class AuthService {
 		return output;
 	}
 
-	public static async sendEmailResetPassword({ request, locals }: RequestEvent): ServiceOutputResultDto<AuthWithResponseDto<emailSchemaDto>> {
+	public static async sendEmailResetPassword({ request, locals }: RequestEvent): AuthServiceOutputType<emailSchemaDto> {
 		const form = await superValidate(request, zod(emailSchema));
 
-		const output = this._getDefaultResponseV2<emailSchemaDto>(form);
+		const output = getDefaultServiceResultOutput<emailSchemaDto, AuthWithResponseDto<emailSchemaDto>>(form);
 
 		if (!form.valid) return output;
 
@@ -195,7 +187,8 @@ export class AuthService {
 	public static async resetPassword(event: RequestEvent, tokenUrlParam: string): ServiceOutputResultDto<AuthWithResponseDto<resetEmailSchemaDto>> {
 		const form = await superValidate(event.request, zod(resetEmailSchema));
 
-		const output = this._getDefaultResponseV2<resetEmailSchemaDto>(form);
+		const output = getDefaultServiceResultOutput<resetEmailSchemaDto, AuthWithResponseDto<resetEmailSchemaDto>>(form);
+
 		if (form.data.token !== tokenUrlParam) {
 			output.error = { errorMessage: "We couldn't verify your token.<br>Try again later, if the issue persists consider contact support for help." };
 			return output;

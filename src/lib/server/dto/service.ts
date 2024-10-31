@@ -8,9 +8,11 @@ export type ServiceOutputResultStructDto<ResultType> = {
 	error?: ServiceErrorDto;
 };
 
-export type ServiceOutputResultDto<ResultType> = Promise<ServiceOutputResultStructDto<ResultType>>;
-
-export type ServiceOutputDto = {
+export type ServiceOutputStructDto = {
 	statusCode: number;
 	error?: ServiceErrorDto;
 };
+
+export type ServiceOutputResultDto<ResultType> = Promise<ServiceOutputResultStructDto<ResultType>>;
+
+export type ServiceOutputDto = Promise<ServiceOutputStructDto>;
