@@ -4,14 +4,24 @@ import type { Todo } from '$schemaDB/todos';
 import { superValidate } from 'sveltekit-superforms';
 import { todoSchema } from '$schemaValidate/todo';
 import { zod } from 'sveltekit-superforms/adapters';
+import type { ServiceOutputResultDto } from '$serverDto/service';
+import { getDefaultServiceResultOutput } from '../utils';
+import type { TodoDto } from '$serverDto/todo';
 
 export class TodoService {
-	public static async getAllByUser(userId: string) {
+	public static async getAllByUser(userId: string): ServiceOutputResultDto<{ todos: TodoDto[] }> {
+		const output = getDefaultServiceResultOutput<{ todos: TodoDto[] }>({ todos: [] });
+
 		if (!userId || userId.length === 0) {
-			return "User wasn't provided";
+			output.error = { errorMessage: "User wasn't provided" };
+
+			return output;
 		}
 
-		return await TodoController.GetAllByUserId(userId);
+		const { response } = await TodoController.GetAllByUserId(userId);
+		output.result.todos = response;
+
+		return output;
 	}
 
 	public static async createOrUpdate(todo: Todo, { request, locals }: RequestEvent) {

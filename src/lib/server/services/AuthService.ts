@@ -24,7 +24,10 @@ export class AuthService {
 	public static async signin({ request, locals }: RequestEvent): AuthServiceOutputType<authBaseSchemaDto> {
 		const form = await superValidate(request, zod(authBaseSchema));
 
-		const output = getDefaultServiceResultOutput<authBaseSchemaDto, AuthWithResponseDto<authBaseSchemaDto>>(form);
+		const output = getDefaultServiceResultOutput<AuthWithResponseDto<authBaseSchemaDto>>({
+			form,
+			response: undefined
+		});
 
 		if (!form.valid) return output;
 
@@ -52,7 +55,10 @@ export class AuthService {
 	public static async signup({ request, locals }: RequestEvent): AuthServiceOutputType<authBaseSchemaDto> {
 		const form = await superValidate(request, zod(signupSchema));
 
-		const output = getDefaultServiceResultOutput<authBaseSchemaDto, AuthWithResponseDto<authBaseSchemaDto>>(form);
+		const output = getDefaultServiceResultOutput<AuthWithResponseDto<authBaseSchemaDto>>({
+			form,
+			response: undefined
+		});
 
 		if (!form.valid) return output;
 
@@ -95,7 +101,10 @@ export class AuthService {
 	public static async confirmEmail(event: RequestEvent): AuthServiceOutputType<emailCodeSchemaDto> {
 		const form = await superValidate(event.request, zod(emailCodeSchema));
 
-		const output = getDefaultServiceResultOutput<emailCodeSchemaDto, AuthWithResponseDto<emailCodeSchemaDto>>(form);
+		const output = getDefaultServiceResultOutput<AuthWithResponseDto<emailCodeSchemaDto>>({
+			form,
+			response: undefined
+		});
 
 		if (!form.valid) {
 			output.error = {
@@ -132,7 +141,10 @@ export class AuthService {
 	public static async resendSignupConfirmCode({ request, locals }: RequestEvent): AuthServiceOutputType<emailSchemaDto> {
 		const form = await superValidate(request, zod(emailSchema));
 
-		const output = getDefaultServiceResultOutput<emailSchemaDto, AuthWithResponseDto<emailSchemaDto>>(form);
+		const output = getDefaultServiceResultOutput<AuthWithResponseDto<emailSchemaDto>>({
+			form,
+			response: undefined
+		});
 
 		if (!form.valid) {
 			output.error = {
@@ -162,7 +174,10 @@ export class AuthService {
 	public static async sendEmailResetPassword({ request, locals }: RequestEvent): AuthServiceOutputType<emailSchemaDto> {
 		const form = await superValidate(request, zod(emailSchema));
 
-		const output = getDefaultServiceResultOutput<emailSchemaDto, AuthWithResponseDto<emailSchemaDto>>(form);
+		const output = getDefaultServiceResultOutput<AuthWithResponseDto<emailSchemaDto>>({
+			form,
+			response: undefined
+		});
 
 		if (!form.valid) return output;
 
@@ -187,7 +202,10 @@ export class AuthService {
 	public static async resetPassword(event: RequestEvent, tokenUrlParam: string): ServiceOutputResultDto<AuthWithResponseDto<resetEmailSchemaDto>> {
 		const form = await superValidate(event.request, zod(resetEmailSchema));
 
-		const output = getDefaultServiceResultOutput<resetEmailSchemaDto, AuthWithResponseDto<resetEmailSchemaDto>>(form);
+		const output = getDefaultServiceResultOutput<AuthWithResponseDto<resetEmailSchemaDto>>({
+			form,
+			response: undefined
+		});
 
 		if (form.data.token !== tokenUrlParam) {
 			output.error = { errorMessage: "We couldn't verify your token.<br>Try again later, if the issue persists consider contact support for help." };

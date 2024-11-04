@@ -20,7 +20,7 @@ export class TodoController {
 			};
 		} catch (error) {
 			return {
-				response: null,
+				response: [],
 				error: handleTryCatchError(error)
 			};
 		}
