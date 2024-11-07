@@ -36,7 +36,7 @@ export class AuthService {
 		if (res.response) {
 			const emailNotConfirmed = res.response.error?.code === AUTH_ERRORS.EMAIL_NOT_CONFIRMED;
 
-			output.result.response = res.response;
+			output.data.response = res.response;
 			output.statusCode = SUCCESSFULL_CODE.OK;
 			if (res.response.error && !emailNotConfirmed) output.statusCode = res.response.error.status ?? SERVER_ERROR_CODE.INTERNAL_SERVER_ERROR;
 			output.error = {
@@ -65,7 +65,7 @@ export class AuthService {
 		const res = await SupabaseAuthController.signup(locals.database, form.data);
 
 		if (res.response) {
-			output.result.response = res.response;
+			output.data.response = res.response;
 			output.statusCode = SUCCESSFULL_CODE.OK;
 			if (res.response.error) {
 				output.statusCode = res.response.error.status ?? SERVER_ERROR_CODE.INTERNAL_SERVER_ERROR;
@@ -116,7 +116,7 @@ export class AuthService {
 		const res = await SupabaseAuthController.verifySignupEmail(event.locals.database, form.data);
 
 		if (res.response) {
-			output.result.response = res.response;
+			output.data.response = res.response;
 			output.statusCode = SUCCESSFULL_CODE.OK;
 			if (res.response.error) {
 				output.statusCode = res.response.error.status ?? SERVER_ERROR_CODE.INTERNAL_SERVER_ERROR;

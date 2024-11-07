@@ -10,11 +10,11 @@ import { cookieUtils } from '$lib/utils/cookies';
 
 export const actions: Actions = {
 	default: async (event: RequestEvent) => {
-		const { statusCode, result, error } = await AuthService.signup(event);
+		const { statusCode, data, error } = await AuthService.signup(event);
 
 		if (statusCode !== SUCCESSFULL_CODE.OK)
 			return fail(statusCode, {
-				form: result.form,
+				form: data.form,
 				flashMessage: {
 					title: 'Signup',
 					description: error?.errorMessage,
@@ -27,7 +27,7 @@ export const actions: Actions = {
 			description: 'Check your email for the code to complete your registration.',
 			type: MessageType.success
 		});
-		cookieUtils.setCookie(event.cookies, COOKIE.CONFIRM_EMAIL, result.form.data.email);
+		cookieUtils.setCookie(event.cookies, COOKIE.CONFIRM_EMAIL, data.form.data.email);
 		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.CONFIRM_EMAIL);
 	}
 };

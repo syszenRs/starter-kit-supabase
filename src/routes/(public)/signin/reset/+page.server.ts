@@ -10,11 +10,11 @@ import { COOKIE } from '$constant/cookies';
 
 export const actions: Actions = {
 	default: async (event: RequestEvent) => {
-		const { statusCode, result, error } = await AuthService.sendEmailResetPassword(event);
+		const { statusCode, data, error } = await AuthService.sendEmailResetPassword(event);
 
 		if (statusCode !== SUCCESSFULL_CODE.OK)
 			return fail(statusCode, {
-				form: result.form,
+				form: data.form,
 				flashMessage: {
 					title: 'Reset password',
 					description: error?.errorMessage,

@@ -24,11 +24,11 @@ export const actions: Actions = {
 	default: async (event: RequestEvent) => {
 		const hashToken = event.url.searchParams.get('token') as string;
 
-		const { statusCode, result, error } = await AuthService.resetPassword(event, hashToken);
+		const { statusCode, data, error } = await AuthService.resetPassword(event, hashToken);
 
 		if (statusCode !== SUCCESSFULL_CODE.OK) {
 			return fail(statusCode, {
-				form: result.form,
+				form: data.form,
 				flashMessage: {
 					title: 'Reset password',
 					description: error?.errorMessage,

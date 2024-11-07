@@ -7,6 +7,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import type { ServiceOutputResultDto } from '$serverDto/service';
 import { getDefaultServiceResultOutput } from '../utils';
 import type { TodoDto } from '$serverDto/todo';
+import { SUCCESSFULL_CODE } from '$constant/http-code';
 
 export class TodoService {
 	public static async getAllByUser(userId: string): ServiceOutputResultDto<{ todos: TodoDto[] }> {
@@ -19,7 +20,8 @@ export class TodoService {
 		}
 
 		const { response } = await TodoController.GetAllByUserId(userId);
-		output.result.todos = response;
+		output.data.todos = response;
+		output.statusCode = SUCCESSFULL_CODE.OK;
 
 		return output;
 	}

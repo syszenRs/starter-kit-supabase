@@ -2,10 +2,10 @@ import { TodoService } from '$service/TodoService';
 import type { Actions, PageServerLoad, RequestEvent } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
-	const { response } = await TodoService.getAllByUser(locals.user!.id);
+	const { data } = await TodoService.getAllByUser(locals.user!.id);
 
 	return {
-		todos: response,
+		todos: data.todos,
 		user: locals.user
 	};
 };

@@ -4,7 +4,7 @@ import type { ServiceOutputResultStructDto, ServiceOutputStructDto } from '$serv
 export function getDefaultServiceResultOutput<ResponseDtoType>(resultDefault: ResponseDtoType): ServiceOutputResultStructDto<ResponseDtoType> {
 	return {
 		statusCode: CLIENT_ERROR_CODE.BAD_REQUEST,
-		result: resultDefault,
+		data: resultDefault,
 		error: undefined
 	};
 }

@@ -4,7 +4,7 @@ type ServiceErrorDto = {
 
 export type ServiceOutputResultStructDto<ResultType> = {
 	statusCode: number;
-	result: ResultType;
+	data: ResultType;
 	error?: ServiceErrorDto;
 };
 
