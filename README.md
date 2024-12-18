@@ -9,6 +9,6 @@ To start just clone this and [Configure your environment](md/env-configuration.m
 ##### this was created using
 
 -- Svelte[Kit]
--- Supabase (with local development env)
+-- Supabase (with local development env) + resend (emails)
 -- Superforms + zod
 -- tailwindCSS
