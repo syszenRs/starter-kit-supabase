@@ -7,12 +7,10 @@ import { APP_REDIRECT } from '$constant/routes-url';
 import { cookieUtils } from '$lib/utils/cookies';
 import { COOKIE } from '$constant/cookies';
 import { dev } from '$app/environment';
+import { MessageType } from '$dto/flash-message';
 
 //TODO: if DB Service is down show a static page
 const supabase: Handle = async ({ event, resolve }) => {
-	const flashMessage = cookieUtils.getAndDestroy(event.cookies, COOKIE.SERVER_FLASH_MESSAGE);
-	event.locals.serverFlashMessage = flashMessage ? JSON.parse(flashMessage) : null;
-
 	/**
 	 * Creates a Supabase client specific to this server request.
 	 *
@@ -86,10 +84,23 @@ const authGuard: Handle = async ({ event, resolve }) => {
 	const isAccessingAuthenticatedPages = event.route.id?.includes('(authenticated)');
 
 	if (!session && isAccessingAuthenticatedPages) {
+		console.log('ath');
+		cookieUtils.sentServerFlashMessage(event.cookies, COOKIE.SERVER_FLASH_MESSAGE, {
+			title: 'Authentication',
+			description: 'You need to sign-in first',
+			type: MessageType.error
+		});
+
 		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.SIGNIN);
 	}
 
 	if (session && !isAccessingAuthenticatedPages) {
+		cookieUtils.sentServerFlashMessage(event.cookies, COOKIE.SERVER_FLASH_MESSAGE, {
+			title: 'Authentication',
+			description: 'You are already logged in',
+			type: MessageType.error
+		});
+
 		throw redirect(REDIRECT_CODE.TEMPORARY_REDIRECT, APP_REDIRECT.DASHBOARD);
 	}
 
@@ -122,4 +133,11 @@ export const handleError: HandleServerError = async ({ error, status, message })
 	};
 };
 
-export const handle: Handle = sequence(supabase, authGuard);
+const t: Handle = async ({ event, resolve }) => {
+	const flashMessage = cookieUtils.getAndDestroy(event.cookies, COOKIE.SERVER_FLASH_MESSAGE);
+	event.locals.serverFlashMessage = flashMessage ? JSON.parse(flashMessage) : null;
+	console.log('t', flashMessage, event.locals.serverFlashMessage);
+	return resolve(event);
+};
+
+export const handle: Handle = sequence(supabase, authGuard, t);

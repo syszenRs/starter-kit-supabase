@@ -39,5 +39,7 @@ export const load: LayoutLoad = async ({ data, depends, fetch }) => {
 		data: { user }
 	} = await supabase.auth.getUser();
 
+	console.log('layout::', data.serverFlashMessage);
+
 	return { session, database: supabase, user, serverFlashMessage: data.serverFlashMessage };
 };
